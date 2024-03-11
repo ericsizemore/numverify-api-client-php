@@ -1,5 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Numverify API Client for PHP.
+ *
+ * (c) 2024 Eric Sizemore <admin@secondversion.com>
+ * (c) 2018-2021 Mark Rogoyski
+ *
+ * @license The MIT License
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace Numverify\Tests\Country;
 
 use PHPUnit\Framework\TestCase;
@@ -11,9 +25,9 @@ use stdClass;
  */
 class CountryTest extends TestCase
 {
-    private const COUNTRY_CODE  = 'US';
+    private const COUNTRY_CODE = 'US';
 
-    private const COUNTRY_NAME  = 'United States';
+    private const COUNTRY_NAME = 'United States';
 
     private const DIALLING_CODE = '+1';
 

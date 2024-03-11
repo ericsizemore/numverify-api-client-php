@@ -1,5 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Numverify API Client for PHP.
+ *
+ * (c) 2024 Eric Sizemore <admin@secondversion.com>
+ * (c) 2018-2021 Mark Rogoyski
+ *
+ * @license The MIT License
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace Numverify\Country;
 
 use Countable;
@@ -15,7 +29,7 @@ use function reset;
 
 /**
  * Country Collection
- * Role: Collection of callable countries
+ * Role: Collection of callable countries.
  *
  * @implements Iterator<Country>
  */
@@ -55,7 +69,7 @@ class Collection implements Iterator, Countable, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function count(): int
     {
@@ -63,7 +77,7 @@ class Collection implements Iterator, Countable, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      *
      * @return object[]
      */
@@ -73,7 +87,7 @@ class Collection implements Iterator, Countable, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function rewind(): void
     {
@@ -81,7 +95,7 @@ class Collection implements Iterator, Countable, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function current(): Country
     {
@@ -95,7 +109,7 @@ class Collection implements Iterator, Countable, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function key(): int | string | null
     {
@@ -103,7 +117,7 @@ class Collection implements Iterator, Countable, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function next(): void
     {
@@ -111,7 +125,7 @@ class Collection implements Iterator, Countable, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function valid(): bool
     {

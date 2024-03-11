@@ -1,5 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Numverify API Client for PHP.
+ *
+ * (c) 2024 Eric Sizemore <admin@secondversion.com>
+ * (c) 2018-2021 Mark Rogoyski
+ *
+ * @license The MIT License
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace Numverify\PhoneNumber;
 
 use JsonSerializable;
@@ -12,7 +26,8 @@ use function sprintf;
 
 /**
  * InvalidPhoneNumber
- * Role: Value object to represent a phone number that the Numverify returned as invalid
+ * Role: Value object to represent a phone number that the Numverify returned as invalid.
+ *
  * @see \Numverify\Tests\PhoneNumber\InvalidPhoneNumberTest
  */
 class InvalidPhoneNumber implements PhoneNumberInterface, JsonSerializable, Stringable
@@ -45,7 +60,7 @@ class InvalidPhoneNumber implements PhoneNumberInterface, JsonSerializable, Stri
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function __toString(): string
     {
@@ -53,7 +68,7 @@ class InvalidPhoneNumber implements PhoneNumberInterface, JsonSerializable, Stri
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      *
      * @return array<string, bool|string>
      */

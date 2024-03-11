@@ -1,5 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Numverify API Client for PHP.
+ *
+ * (c) 2024 Eric Sizemore <admin@secondversion.com>
+ * (c) 2018-2021 Mark Rogoyski
+ *
+ * @license The MIT License
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace Numverify\Tests\PhoneNumber;
 
 use Iterator;
@@ -24,25 +38,25 @@ use function print_r;
 #[CoversClass(ValidPhoneNumber::class)]
 class ValidPhoneNumberTest extends TestCase
 {
-    private const VALID                = true;
+    private const VALID = true;
 
-    private const NUMBER               = '14158586273';
+    private const NUMBER = '14158586273';
 
-    private const LOCAL_FORMAT         = '4158586273';
+    private const LOCAL_FORMAT = '4158586273';
 
     private const INTERNATIONAL_FORMAT = '+14158586273';
 
-    private const COUNTRY_PREFIX       = '+1';
+    private const COUNTRY_PREFIX = '+1';
 
-    private const COUNTRY_CODE         = 'US';
+    private const COUNTRY_CODE = 'US';
 
-    private const COUNTRY_NAME         = 'United States of America';
+    private const COUNTRY_NAME = 'United States of America';
 
-    private const LOCATION             = 'Novato';
+    private const LOCATION = 'Novato';
 
-    private const CARRIER              = 'AT&T Mobility LLC';
+    private const CARRIER = 'AT&T Mobility LLC';
 
-    private const LINE_TYPE            = 'mobile';
+    private const LINE_TYPE = 'mobile';
 
     private stdClass $validatedPhoneNumberData;
 

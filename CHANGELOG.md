@@ -16,6 +16,7 @@ Forked from [`markrogoyski/numverify-api-client-php`](https://github.com/markrog
     * Bumped minimum PHP version to 8.2
     * Autoloading should follow PSR-4
     * Updated PHPUnit to 11.0+
+  * Added `strict_types` declaration and PHPDoc header to all files.
   * `Api::__construct` has a new `$options` parameter, which is optional, that can pass options to Guzzle Client.
   * `NumverifyApiFailureException` is wrapped around `\GuzzleHttp\Exception\ServerException`
   * `Api::validateResponse()` changed to `Api::validateAndDecodeResponse()`.

@@ -1,5 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Numverify API Client for PHP.
+ *
+ * (c) 2024 Eric Sizemore <admin@secondversion.com>
+ * (c) 2018-2021 Mark Rogoyski
+ *
+ * @license The MIT License
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace Numverify\Tests\Exception;
 
 use PHPUnit\Framework\TestCase;
@@ -11,11 +25,11 @@ use GuzzleHttp\Psr7\Response;
  */
 class NumverifyApiFailureExceptionTest extends TestCase
 {
-    private const STATUS_CODE   = 500;
+    private const STATUS_CODE = 500;
 
     private const REASON_PHRASE = 'Internal Server Error';
 
-    private const BODY          = 'server error';
+    private const BODY = 'server error';
 
     private Response $response;
 

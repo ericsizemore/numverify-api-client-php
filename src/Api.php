@@ -1,5 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Numverify API Client for PHP.
+ *
+ * (c) 2024 Eric Sizemore <admin@secondversion.com>
+ * (c) 2018-2021 Mark Rogoyski
+ *
+ * @license The MIT License
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace Numverify;
 
 use GuzzleHttp\{
@@ -38,6 +52,7 @@ use function trim;
  * Main API class.
  *
  * @see \Numverify\Tests\ApiTest
+ *
  * @phpstan-type ApiJsonArray array{success?: bool, error?: array{code?: int, type?: string, info?: string}, valid?: bool, number?: string, local_format?: string, international_format?: string, country_prefix?: string, country_code?: string, country_name?: string, location?: string, carrier?: string, line_type?: string}
  */
 class Api
@@ -47,17 +62,17 @@ class Api
      *
      * @see https://numverify.com/product
      */
-    private const HTTP_URL  = 'http://apilayer.net/api';
+    private const HTTP_URL = 'http://apilayer.net/api';
 
     /**
-     * URL for Numverify's paid plans. ("Basic", "Professional", or "Enterprise")
+     * URL for Numverify's paid plans. ("Basic", "Professional", or "Enterprise").
      *
      * @see https://numverify.com/product
      */
     private const HTTPS_URL = 'https://apilayer.net/api';
 
     /**
-     * Guzzle Client
+     * Guzzle Client.
      */
     private ClientInterface $client;
 
@@ -70,10 +85,10 @@ class Api
      *
      * Note: If you are on their free plan, $useHttps = true will not work for you.
      *
-     * @param  string                $accessKey  API access key.
-     * @param  bool                  $useHttps   (optional) Flag to determine if API calls should use http or https.
-     * @param  ClientInterface|null  $client     (optional) Parameter to provide your own Guzzle client.
-     * @param  array<string, mixed>  $options    (optional) Array of options to pass to the Guzzle client.
+     * @param string               $accessKey API access key.
+     * @param bool                 $useHttps  (optional) Flag to determine if API calls should use http or https.
+     * @param ClientInterface|null $client    (optional) Parameter to provide your own Guzzle client.
+     * @param array<string, mixed> $options   (optional) Array of options to pass to the Guzzle client.
      */
     public function __construct(
         #[SensitiveParameter]
@@ -110,7 +125,7 @@ class Api
      * @param string $countryCode (Optional) Use to provide a phone number in a local format (non E.164).
      *
      * @throws NumverifyApiFailureException If the response is non 200 or success field is false.
-     * @throws GuzzleException If Guzzle encounters an issue.
+     * @throws GuzzleException              If Guzzle encounters an issue.
      */
     public function validatePhoneNumber(string $phoneNumber, string $countryCode = ''): PhoneNumberInterface
     {
@@ -146,8 +161,8 @@ class Api
     /**
      * Get list of countries.
      *
-     * @throws NumverifyApiFailureException if the response is non 200 or success field is false.
-     * @throws GuzzleException If Guzzle encounters an issue.
+     * @throws NumverifyApiFailureException If the response is non 200 or success field is false.
+     * @throws GuzzleException              If Guzzle encounters an issue.
      */
     public function getCountries(): Collection
     {
@@ -191,7 +206,8 @@ class Api
      * If everything looks good, it returns the decoded jSON data based on $asArray.
      *
      * @param ResponseInterface $response
-     * @param bool $asArray If true, returns the decoded jSON as an assoc. array, stdClass otherwise.
+     * @param bool              $asArray  If true, returns the decoded jSON as an assoc. array, stdClass otherwise.
+     *
      * @return stdClass | ApiJsonArray
      *
      * @throws NumverifyApiFailureException if the response is non 200 or success field is false.
@@ -235,7 +251,8 @@ class Api
      * Returns given $options as passed, minus the 'cachePath' as it is not a valid Guzzle option for
      * the client.
      *
-     * @param  array<string, mixed>  $options
+     * @param array<string, mixed> $options
+     *
      * @return array<string, mixed>
      */
     private function buildCacheHandler(array $options): array

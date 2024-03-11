@@ -1,5 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Numverify API Client for PHP.
+ *
+ * (c) 2024 Eric Sizemore <admin@secondversion.com>
+ * (c) 2018-2021 Mark Rogoyski
+ *
+ * @license The MIT License
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace Numverify\Country;
 
 use JsonSerializable;
@@ -9,17 +23,17 @@ use function sprintf;
 
 /**
  * Country
- * Role: Value object that represents a callable country
+ * Role: Value object that represents a callable country.
  */
 readonly class Country implements Stringable, JsonSerializable
 {
     /**
-     * Country constructor
+     * Country constructor.
      */
     public function __construct(private string $countryCode, private string $countryName, private string $dialingCode) {}
 
     /**
-     * Get country code
+     * Get country code.
      */
     public function getCountryCode(): string
     {
@@ -27,7 +41,7 @@ readonly class Country implements Stringable, JsonSerializable
     }
 
     /**
-     * Get country name
+     * Get country name.
      */
     public function getCountryName(): string
     {
@@ -35,7 +49,7 @@ readonly class Country implements Stringable, JsonSerializable
     }
 
     /**
-     * Get dialing code
+     * Get dialing code.
      */
     public function getDialingCode(): string
     {
@@ -43,7 +57,7 @@ readonly class Country implements Stringable, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * CountryCode: CountryName (DialingCode)
      */
@@ -53,7 +67,7 @@ readonly class Country implements Stringable, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      *
      * @return string[]
      */
