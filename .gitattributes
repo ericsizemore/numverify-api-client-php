@@ -12,3 +12,4 @@
 /phpstan.neon             export-ignore
 /phpunit.xml              export-ignore
 /renovate.json            export-ignore
+/psalm.xml                export-ignore
