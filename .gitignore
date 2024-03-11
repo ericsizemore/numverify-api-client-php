@@ -1,5 +1,7 @@
-/vendor
-composer.lock
-composer.phar
-/.idea
-.phpunit.result.cache
+.idea/
+vendor/
+build/
+.php-cs-fixer.cache
+*.iws
+out/
+.idea_modules/

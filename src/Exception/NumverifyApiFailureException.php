@@ -2,62 +2,53 @@
 
 namespace Numverify\Exception;
 
+use RuntimeException;
+use Psr\Http\Message\ResponseInterface;
+
+use function json_decode;
+use function sprintf;
+
+use stdClass;
+
 /**
- * Thrown when the Numverify API returns a failure response
+ * Thrown when the Numverify API returns a failure response.
  */
-class NumverifyApiFailureException extends \RuntimeException
+class NumverifyApiFailureException extends RuntimeException
 {
-    /** @var int */
-    private $statusCode;
+    private readonly int $statusCode;
 
-    /** @var string */
-    private $reasonPhrase;
+    private readonly string $reasonPhrase;
 
-    /** @var \Psr\Http\Message\StreamInterface */
-    private $body;
+    private readonly string $body;
 
-    /**
-     * NumverifyApiFailureException constructor
-     *
-     * @param \Psr\Http\Message\ResponseInterface $response
-     */
-    public function __construct(\Psr\Http\Message\ResponseInterface $response)
+    public function __construct(ResponseInterface $response)
     {
         $this->statusCode   = $response->getStatusCode();
         $this->reasonPhrase = $response->getReasonPhrase();
-        $this->body         = $response->getBody();
+        $this->body         = (string) $response->getBody();
 
         $message = $this->parseMessageFromBody($this->body);
 
         parent::__construct($message);
     }
 
-    /**
-     * @return int
-     */
     public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
-    /**
-     * @return string
-     */
     public function getReasonPhrase(): string
     {
         return $this->reasonPhrase;
     }
 
-    /**
-     * @return string
-     */
     public function getBody(): string
     {
-        return (string) $this->body;
+        return $this->body;
     }
 
     /**
-     * Parse JSON body error message
+     * Parse JSON body error message.
      *
      * Expecting a JSON body like:
      * {
@@ -68,20 +59,16 @@ class NumverifyApiFailureException extends \RuntimeException
      *         "info":"You have not supplied a valid API Access Key. [Technical Support: support@apilayer.com]"
      *     }
      * }
-     *
-     * @param string $jsonBody
-     *
-     * @return string
      */
     private function parseMessageFromBody(string $jsonBody): string
     {
+        /** @var stdClass $body */
         $body = json_decode($jsonBody);
 
         if (!isset($body->error)) {
-            return 'Unknown error - ' . $this->statusCode . ' ' . $this->getReasonPhrase();
+            return sprintf('Unknown error - %d %s', $this->statusCode, $this->getReasonPhrase());
         }
 
-        $error = $body->error;
-        return sprintf('Type:%s Code:%d Info:%s', $error->type, $error->code, $error->info);
+        return sprintf('Type:%s Code:%d Info:%s', $body->error->type, $body->error->code, $body->error->info);
     }
 }

@@ -1,200 +1,178 @@
 <?php
 
-namespace Numverify\Tests;
+namespace Numverify\Tests\Country;
 
-use Numverify\Country\Country;
-use Numverify\Country\Collection;
+use Numverify\Country\{
+    Country,
+    Collection
+};
+use PHPUnit\Framework\{
+    Attributes\CoversClass,
+    Attributes\DataProvider,
+    Attributes\UsesClass,
+    TestCase
+};
+use LogicException;
+use Iterator;
+use stdClass;
 
-class CollectionTest extends \PHPUnit\Framework\TestCase
+/**
+ * @internal
+ */
+#[CoversClass(Collection::class)]
+#[UsesClass(Country::class)]
+class CollectionTest extends TestCase
 {
+    private Country $countryUs;
+
+    private Country $countryGb;
+
+    private Country $countryJp;
+
+    /**
+     * Set up countries.
+     */
+    protected function setUp(): void
+    {
+        $this->countryUs = new Country('US', 'United States', '+1');
+        $this->countryGb = new Country('GB', 'United Kingdom', '+44');
+        $this->countryJp = new Country('JP', 'Japan', '+81');
+    }
+
     /**
      * @testCase findByCountryCode
      */
-    public function testFindByCountryCode()
+    public function testFindByCountryCode(): void
     {
-        // Given
         $collection = new Collection(...[$this->countryUs, $this->countryGb, $this->countryJp]);
 
-        // When
         $countryUs = $collection->findByCountryCode($this->countryUs->getCountryCode());
         $countryGb = $collection->findByCountryCode($this->countryGb->getCountryCode());
         $countryJp = $collection->findByCountryCode($this->countryJp->getCountryCode());
 
-        // Then
-        $this->assertEquals($this->countryUs, $countryUs);
-        $this->assertEquals($this->countryGb, $countryGb);
-        $this->assertEquals($this->countryJp, $countryJp);
+        self::assertSame($this->countryUs, $countryUs);
+        self::assertSame($this->countryGb, $countryGb);
+        self::assertSame($this->countryJp, $countryJp);
     }
 
     /**
      * @testCase findByCountryName
      */
-    public function testFindByCountryName()
+    public function testFindByCountryName(): void
     {
-        // Given
         $collection = new Collection(...[$this->countryUs, $this->countryGb, $this->countryJp]);
 
-        // When
         $countryUs = $collection->findByCountryName($this->countryUs->getCountryName());
         $countryGb = $collection->findByCountryName($this->countryGb->getCountryName());
         $countryJp = $collection->findByCountryName($this->countryJp->getCountryName());
 
-        // Then
-        $this->assertEquals($this->countryUs, $countryUs);
-        $this->assertEquals($this->countryGb, $countryGb);
-        $this->assertEquals($this->countryJp, $countryJp);
+        self::assertSame($this->countryUs, $countryUs);
+        self::assertSame($this->countryGb, $countryGb);
+        self::assertSame($this->countryJp, $countryJp);
     }
 
     /**
-     * @testCase     Countable interface
-     * @dataProvider dataProviderForCountryCounts
-     * @param        array $countries
-     * @param        int   $expectedCount
+     * @testCase Countable interface.
+     * @param Country[] $countries
      */
-    public function testCount(array $countries, int $expectedCount)
+    #[DataProvider('dataProviderForCountryCounts')]
+    public function testCount(array $countries, int $expectedCount): void
     {
-        // Given
         $collection = new Collection(...$countries);
-
-        // Then
-        $this->assertCount($expectedCount, $collection);
+        self::assertCount($expectedCount, $collection);
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForCountryCounts(): array
+    public static function dataProviderForCountryCounts(): Iterator
     {
-        return [
-            'zero' => [
-                [],
-                0,
+        yield 'zero' => [
+            [],
+            0,
+        ];
+        yield 'one' => [
+            [new Country('US', 'United States', '+1')],
+            1,
+        ];
+        yield 'two' => [
+            [
+                new Country('US', 'United States', '+1'),
+                new Country('GB', 'United Kingdom', '+44'),
             ],
-            'one' => [
-                [new Country('US', 'United States', '+1')],
-                1,
+            2,
+        ];
+        yield 'three' => [
+            [
+                new Country('US', 'United States', '+1'),
+                new Country('GB', 'United Kingdom', '+44'),
+                new Country('JP', 'Japan', '+81'),
             ],
-            'two' => [
-                [
-                    new Country('US', 'United States', '+1'),
-                    new Country('GB', 'United Kingdom', '+44')
-                ],
-                2,
-            ],
-            'three' => [
-                [
-                    new Country('US', 'United States', '+1'),
-                    new Country('GB', 'United Kingdom', '+44'),
-                    new Country('JP', 'Japan', '+81')
-                ],
-                3,
-            ],
+            3,
         ];
     }
 
     /**
-     * @testCase JsonSerialize interface
+     * @testCase JsonSerialize interface.
      */
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
-        // Given
         $collection = new Collection(...[$this->countryUs, $this->countryGb, $this->countryJp]);
 
-        // When
+        /** @var non-empty-string $json */
         $json = json_encode($collection);
 
-        // Then
+        /** @var stdClass $object */
         $object = json_decode($json);
-        $this->assertObjectHasAttribute('US', $object);
-        $this->assertObjectHasAttribute('GB', $object);
-        $this->assertObjectHasAttribute('JP', $object);
-
-        // And
-        $this->assertEquals('US', $object->US->countryCode);
-        $this->assertEquals('GB', $object->GB->countryCode);
-        $this->assertEquals('JP', $object->JP->countryCode);
-        $this->assertEquals('United States', $object->US->countryName);
-        $this->assertEquals('United Kingdom', $object->GB->countryName);
-        $this->assertEquals('Japan', $object->JP->countryName);
-        $this->assertEquals('+1', $object->US->diallingCode);
-        $this->assertEquals('+44', $object->GB->diallingCode);
-        $this->assertEquals('+81', $object->JP->diallingCode);
+        self::assertObjectHasProperty('US', $object);
+        self::assertObjectHasProperty('GB', $object);
+        self::assertObjectHasProperty('JP', $object);
+        self::assertSame('US', $object->US->countryCode);
+        self::assertSame('GB', $object->GB->countryCode);
+        self::assertSame('JP', $object->JP->countryCode);
+        self::assertSame('United States', $object->US->countryName);
+        self::assertSame('United Kingdom', $object->GB->countryName);
+        self::assertSame('Japan', $object->JP->countryName);
+        self::assertSame('+1', $object->US->diallingCode);
+        self::assertSame('+44', $object->GB->diallingCode);
+        self::assertSame('+81', $object->JP->diallingCode);
     }
 
     /**
-     * @testCase Iterator interface
+     * @testCase Iterator interface.
      */
-    public function testIterator()
+    public function testIterator(): void
     {
-        // Given
         $collection        = new Collection(...[$this->countryUs, $this->countryGb, $this->countryJp]);
         $expectedCountries = ['US' => false, 'GB' => false, 'JP' => false];
 
-        // When
         foreach ($collection as $countryCode => $country) {
             $expectedCountries[$countryCode] = true;
-            $this->assertInstanceOf(Country::class, $country);
+            self::assertInstanceOf(Country::class, $country); // @phpstan-ignore-line
         }
 
-        // Then
-        foreach ($expectedCountries as $countryCode => $seen) {
-            $this->assertTrue($seen);
+        foreach ($expectedCountries as $expectedCountry) {
+            self::assertTrue($expectedCountry);
         }
     }
 
     /**
-     * @test Iteration failure if manually manipulating the iterator (with elements)
+     * @testCase Iteration failure if manually manipulating the iterator (with elements).
      */
-    public function testIterationCurrentFailureWithElements()
+    public function testIterationCurrentFailureWithElements(): void
     {
-        // Given
         $collection = new Collection(...[$this->countryUs]);
-
-        // And
         $collection->next();
 
-        // Then
-        $this->expectException(\LogicException::class);
-
-        // When
+        $this->expectException(LogicException::class);
         $collection->current();
     }
 
     /**
-     * @test Iteration failure if manually manipulating the iterator (no elements)
+     * @testCase Iteration failure if manually manipulating the iterator (no elements).
      */
-    public function testIterationCurrentFailureNoElements()
+    public function testIterationCurrentFailureNoElements(): void
     {
-        // Given
         $collection = new Collection(...[]);
 
-        // Then
-        $this->expectException(\LogicException::class);
-
-        // When
+        $this->expectException(LogicException::class);
         $collection->current();
-    }
-
-    /* ********* *
-     * TEST DATA
-     * ********* */
-
-    /** @var Country */
-    private $countryUs;
-
-    /** @var Country */
-    private $countryGb;
-
-    /** @var Country */
-    private $countryJp;
-
-    /**
-     * Set up countries
-     */
-    public function setUp(): void
-    {
-        $this->countryUs = new Country('US', 'United States', '+1');
-        $this->countryGb = new Country('GB', 'United Kingdom', '+44');
-        $this->countryJp = new Country('JP', 'Japan', '+81');
     }
 }

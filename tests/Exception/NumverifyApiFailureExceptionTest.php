@@ -1,69 +1,59 @@
 <?php
 
-namespace Numverify\Tests\PhoneNumber;
+namespace Numverify\Tests\Exception;
 
+use PHPUnit\Framework\TestCase;
 use Numverify\Exception\NumverifyApiFailureException;
-use PHPUnit\Framework\MockObject\MockObject;
+use GuzzleHttp\Psr7\Response;
 
-class NumverifyApiFailureExceptionTest extends \PHPUnit\Framework\TestCase
+/**
+ * @internal
+ */
+class NumverifyApiFailureExceptionTest extends TestCase
 {
+    private const STATUS_CODE   = 500;
+
+    private const REASON_PHRASE = 'Internal Server Error';
+
+    private const BODY          = 'server error';
+
+    private Response $response;
+
+    protected function setUp(): void
+    {
+        $this->response = new Response(self::STATUS_CODE, body: self::BODY, reason: self::REASON_PHRASE);
+    }
+
     /**
      * @testCase getStatusCode
      */
-    public function testGetStatusCode()
+    public function testGetStatusCode(): void
     {
-        // Given
-        $e = new NumverifyApiFailureException($this->response);
+        $numverifyApiFailureException = new NumverifyApiFailureException($this->response);
 
-        // When
-        $statusCode = $e->getStatusCode();
-
-        // Then
-        $this->assertSame(self::STATUS_CODE, $statusCode);
+        $statusCode = $numverifyApiFailureException->getStatusCode();
+        self::assertSame(self::STATUS_CODE, $statusCode);
     }
 
     /**
      * @testCase getReasonPhrase
      */
-    public function testGetReasonPhrase()
+    public function testGetReasonPhrase(): void
     {
-        // Given
-        $e = new NumverifyApiFailureException($this->response);
+        $numverifyApiFailureException = new NumverifyApiFailureException($this->response);
 
-        // When
-        $reasonPhrase = $e->getReasonPhrase();
-
-        // Then
-        $this->assertSame(self::REASON_PHRASE, $reasonPhrase);
+        $reasonPhrase = $numverifyApiFailureException->getReasonPhrase();
+        self::assertSame(self::REASON_PHRASE, $reasonPhrase);
     }
 
     /**
      * @testCase getBody
      */
-    public function testGetBody()
+    public function testGetBody(): void
     {
-        // Given
-        $e = new NumverifyApiFailureException($this->response);
+        $numverifyApiFailureException = new NumverifyApiFailureException($this->response);
 
-        // When
-        $body = $e->getBody();
-
-        // Then
-        $this->assertSame(self::BODY, $body);
-    }
-
-    private const STATUS_CODE   = 500;
-    private const REASON_PHRASE = 'Internal Server Error';
-    private const BODY          = 'server error';
-
-    /** @var \Psr\Http\Message\ResponseInterface|MockObject */
-    private $response;
-
-    public function setUp(): void
-    {
-        $this->response = $this->getMockBuilder(\Psr\Http\Message\ResponseInterface::class)->getMock();
-        $this->response->method('getStatusCode')->willReturn(self::STATUS_CODE);
-        $this->response->method('getReasonPhrase')->willReturn(self::REASON_PHRASE);
-        $this->response->method('getBody')->willReturn(self::BODY);
+        $body = $numverifyApiFailureException->getBody();
+        self::assertSame(self::BODY, $body);
     }
 }

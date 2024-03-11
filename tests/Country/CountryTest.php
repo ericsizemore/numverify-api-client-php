@@ -1,68 +1,63 @@
 <?php
 
-namespace Numverify\Tests;
+namespace Numverify\Tests\Country;
 
+use PHPUnit\Framework\TestCase;
 use Numverify\Country\Country;
+use stdClass;
 
-class CountryTest extends \PHPUnit\Framework\TestCase
+/**
+ * @internal
+ */
+class CountryTest extends TestCase
 {
+    private const COUNTRY_CODE  = 'US';
+
+    private const COUNTRY_NAME  = 'United States';
+
+    private const DIALLING_CODE = '+1';
+
     /**
-     * @testCase getters
+     * @testCase getters.
      */
-    public function testGetters()
+    public function testGetters(): void
     {
-        // Given
         $country = new Country(self::COUNTRY_CODE, self::COUNTRY_NAME, self::DIALLING_CODE);
 
-        // When
         $countryCode  = $country->getCountryCode();
         $countryName  = $country->getCountryName();
         $diallingCode = $country->getDialingCode();
 
-        // Then
-        $this->assertSame(self::COUNTRY_CODE, $countryCode);
-        $this->assertSame(self::COUNTRY_NAME, $countryName);
-        $this->assertSame(self::DIALLING_CODE, $diallingCode);
+        self::assertSame(self::COUNTRY_CODE, $countryCode);
+        self::assertSame(self::COUNTRY_NAME, $countryName);
+        self::assertSame(self::DIALLING_CODE, $diallingCode);
     }
 
     /**
-     * @testCase String representation
+     * @testCase String representation.
      */
-    public function testStringRepresentation()
+    public function testStringRepresentation(): void
     {
-        // Given
         $country = new Country(self::COUNTRY_CODE, self::COUNTRY_NAME, self::DIALLING_CODE);
 
-        // When
-        $stringRepresentation = (string)$country;
-
-        // Then
-        $this->assertSame('US: United States (+1)', $stringRepresentation);
+        $stringRepresentation = (string) $country;
+        self::assertSame('US: United States (+1)', $stringRepresentation);
     }
 
     /**
-     * @testCase JsonSerialize interface
+     * @testCase JsonSerialize interface.
      */
-    public function testJsonSerializeInterface()
+    public function testJsonSerializeInterface(): void
     {
-        // Given
         $country = new Country(self::COUNTRY_CODE, self::COUNTRY_NAME, self::DIALLING_CODE);
 
-        // When
+        /** @var non-empty-string $json */
         $json = json_encode($country);
 
-        // Then
+        /** @var stdClass $object */
         $object = json_decode($json);
-        $this->assertSame(self::COUNTRY_CODE, $object->countryCode);
-        $this->assertSame(self::COUNTRY_NAME, $object->countryName);
-        $this->assertSame(self::DIALLING_CODE, $object->diallingCode);
+        self::assertSame(self::COUNTRY_CODE, $object->countryCode);
+        self::assertSame(self::COUNTRY_NAME, $object->countryName);
+        self::assertSame(self::DIALLING_CODE, $object->diallingCode);
     }
-
-    /* ********* *
-     * TEST DATA
-     * ********* */
-
-    private const COUNTRY_CODE  = 'US';
-    private const COUNTRY_NAME  = 'United States';
-    private const DIALLING_CODE = '+1';
 }

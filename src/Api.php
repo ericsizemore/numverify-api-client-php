@@ -2,135 +2,257 @@
 
 namespace Numverify;
 
-use Numverify\Country;
-use Numverify\Exception\NumverifyApiFailureException;
-use Numverify\PhoneNumber;
-use Numverify\PhoneNumber\PhoneNumberInterface;
+use GuzzleHttp\{
+    Client,
+    ClientInterface,
+    Exception\ServerException,
+    Exception\GuzzleException,
+    HandlerStack
+};
+use Kevinrob\GuzzleCache\{
+    CacheMiddleware,
+    Storage\Psr6CacheStorage,
+    Strategy\PrivateCacheStrategy
+};
+use Numverify\{
+    Country\Country,
+    Country\Collection,
+    Exception\NumverifyApiFailureException,
+    PhoneNumber\Factory,
+    PhoneNumber\PhoneNumberInterface
+};
+use Psr\Http\Message\ResponseInterface;
+use SensitiveParameter;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use stdClass;
+
+use function array_keys;
+use function array_map;
+use function array_merge;
+use function is_dir;
+use function is_writable;
+use function json_decode;
+use function trim;
 
 /**
- * Numverify API
- *  - validatePhoneNumber
- *  - getCountries
+ * Main API class.
+ *
+ * @see \Numverify\Tests\ApiTest
+ * @phpstan-type ApiJsonArray array{success?: bool, error?: array{code?: int, type?: string, info?: string}, valid?: bool, number?: string, local_format?: string, international_format?: string, country_prefix?: string, country_code?: string, country_name?: string, location?: string, carrier?: string, line_type?: string}
  */
 class Api
 {
+    /**
+     * URL for Numverify's "Free" plan.
+     *
+     * @see https://numverify.com/product
+     */
     private const HTTP_URL  = 'http://apilayer.net/api';
-    private const HTTPS_URL = 'http://apilayer.net/api';
-
-    /** @var string API access key */
-    private $accessKey;
-
-    /** @var \GuzzleHttp\ClientInterface */
-    private $client;
 
     /**
-     * Api constructor
+     * URL for Numverify's paid plans. ("Basic", "Professional", or "Enterprise")
      *
-     * @param string                           $accessKey  API access key
-     * @param bool                             $useHttps   Optional flag to determine if API calls should use http or https
-     * @param \GuzzleHttp\ClientInterface|null $guzzle     Optional parameter to provide your own Guzzle client
+     * @see https://numverify.com/product
      */
-    public function __construct(string $accessKey, bool $useHttps = false, \GuzzleHttp\ClientInterface $guzzle = null)
-    {
-        $this->accessKey = $accessKey;
-        $this->client    = $guzzle ?? new \GuzzleHttp\Client(['base_uri' => $this->getUrl($useHttps)]);
+    private const HTTPS_URL = 'https://apilayer.net/api';
+
+    /**
+     * Guzzle Client
+     */
+    private ClientInterface $client;
+
+    /**
+     * Api constructor.
+     *
+     * Requires an access (or api) key. You can get one from Numverify:
+     *
+     * @see https://numverify.com/product
+     *
+     * Note: If you are on their free plan, $useHttps = true will not work for you.
+     *
+     * @param  string                $accessKey  API access key.
+     * @param  bool                  $useHttps   (optional) Flag to determine if API calls should use http or https.
+     * @param  ClientInterface|null  $client     (optional) Parameter to provide your own Guzzle client.
+     * @param  array<string, mixed>  $options    (optional) Array of options to pass to the Guzzle client.
+     */
+    public function __construct(
+        #[SensitiveParameter]
+        private readonly string $accessKey,
+        bool $useHttps = false,
+        ?ClientInterface $client = null,
+        array $options = []
+    ) {
+        // If we already have a client
+        if ($client instanceof ClientInterface) {
+            $this->client = $client;
+
+            return;
+        }
+
+        // Build client
+        $clientOptions = ['base_uri' => $this->getUrl($useHttps)];
+
+        // If $options has 'cachePath' key, and it is a valid directory, then buildCacheHandler() will
+        // add Cache to the Guzzle handler stack.
+        $options = $this->buildCacheHandler($options);
+
+        // Merge $options into main client options
+        $clientOptions = array_merge($clientOptions, $options);
+
+        $this->client = new Client($clientOptions);
     }
 
     /**
-     * Validate a phone number
+     * Validate a phone number.
      *
-     * @param string $phoneNumber
-     * @param string $countryCode (Optional) Use to provide a phone number in a local format (non E.164)
+     * Will return ValidPhoneNumber for a valid number, InvalidPhoneNumber otherwise (both PhoneNumberInterface).
      *
-     * @return PhoneNumberInterface|PhoneNumber\ValidPhoneNumber|PhoneNumber\InvalidPhoneNumber
+     * @param string $countryCode (Optional) Use to provide a phone number in a local format (non E.164).
      *
-     * @throws \RuntimeException
+     * @throws NumverifyApiFailureException If the response is non 200 or success field is false.
+     * @throws GuzzleException If Guzzle encounters an issue.
      */
     public function validatePhoneNumber(string $phoneNumber, string $countryCode = ''): PhoneNumberInterface
     {
+        $phoneNumber = trim($phoneNumber);
+        $countryCode = trim($countryCode);
+
         $query = [
             'access_key' => $this->accessKey,
             'number'     => $phoneNumber,
         ];
-        if (strlen($countryCode) > 0) {
+
+        if ($countryCode !== '') {
             $query['country_code'] = $countryCode;
         }
 
-        $result = $this->client->request(
-            'GET',
-            '/validate',
-            [
-                'query' => $query
-            ]
-        );
-        $this->validateResponse($result);
+        try {
+            $result = $this->client->request('GET', '/validate', [
+                'query' => $query,
+            ]);
+        } catch (ServerException $serverException) {
+            // >= 400 <= 500 status code
+            // wrapping ServerException with NumverifyApiFailureException as just checking
+            // getStatusCode() !== 200, like in self::validateAndDecodeResponse(), won't work on server error codes.
+            throw new NumverifyApiFailureException($serverException->getResponse());
+        }
 
-        $body = json_decode($result->getBody());
-        return PhoneNumber\Factory::create($body);
+        /** @var stdClass $body */
+        $body = $this->validateAndDecodeResponse($result);
+
+        return Factory::create($body);
     }
 
     /**
-     * Get list of countries
+     * Get list of countries.
      *
-     * @return Country\Collection
-     *
-     * @throws \RuntimeException
+     * @throws NumverifyApiFailureException if the response is non 200 or success field is false.
+     * @throws GuzzleException If Guzzle encounters an issue.
      */
-    public function getCountries(): Country\Collection
+    public function getCountries(): Collection
     {
-        $result = $this->client->request(
-            'GET',
-            '/countries',
-            [
+        try {
+            $response = $this->client->request('GET', '/countries', [
                 'query' => [
                     'access_key' => $this->accessKey,
-                ]
-            ]
-        );
-        $this->validateResponse($result);
+                ],
+            ]);
+        } catch (ServerException $serverException) {
+            // >= 400 <= 500 status code
+            // wrapping ServerException with NumverifyApiFailureException as just checking
+            // getStatusCode() !== 200, like in self::validateAndDecodeResponse(), won't work on server error codes.
+            throw new NumverifyApiFailureException($serverException->getResponse());
+        }
 
-        $body = json_decode($result->getBody(), true);
+        /** @var ApiJsonArray $body */
+        $body = $this->validateAndDecodeResponse($response, true);
 
         $countries = array_map(
-            function (array $country, string $countryCode) {
-                return new Country\Country($countryCode, $country['country_name'], $country['dialling_code']);
-            },
+            // @phpstan-ignore-next-line
+            static fn (array $country, string $countryCode): Country => new Country($countryCode, $country['country_name'], $country['dialling_code']),
             $body,
             array_keys($body)
         );
-        return new Country\Collection(...$countries);
+
+        return new Collection(...$countries);
     }
 
     /**
-     * Get the URL to use for API calls
-     *
-     * @param bool $useHttp
-     *
-     * @return string
+     * Get the URL to use for API calls.
      */
-    private function getUrl(bool $useHttp): string
+    private function getUrl(bool $useHttps): string
     {
-        return $useHttp
-            ? self::HTTPS_URL
-            : self::HTTP_URL;
+        return $useHttps ? self::HTTPS_URL : self::HTTP_URL;
     }
 
     /**
-     * Validate the response
+     * Given a response object, checks the status code and checks the 'success' field, if it exists.
      *
-     * @param \Psr\Http\Message\ResponseInterface $response
+     * If everything looks good, it returns the decoded jSON data based on $asArray.
      *
-     * @throws NumverifyApiFailureException if the response is non 200 or success field is false
+     * @param ResponseInterface $response
+     * @param bool $asArray If true, returns the decoded jSON as an assoc. array, stdClass otherwise.
+     * @return stdClass | ApiJsonArray
+     *
+     * @throws NumverifyApiFailureException if the response is non 200 or success field is false.
      */
-    private function validateResponse(\Psr\Http\Message\ResponseInterface $response): void
+    private function validateAndDecodeResponse(ResponseInterface $response, bool $asArray = false): stdClass | array
     {
+        // If not 200 ok
         if ($response->getStatusCode() !== 200) {
             throw new NumverifyApiFailureException($response);
         }
 
-        $body = json_decode($response->getBody());
-        if (isset($body->success) && $body->success == false) {
+        if ($asArray) {
+            /**
+             * @var ApiJsonArray $body
+             */
+            $body = json_decode($response->getBody()->getContents(), true);
+
+            if (isset($body['success']) && $body['success'] === false) {
+                throw new NumverifyApiFailureException($response);
+            }
+
+            return $body;
+        }
+
+        /**
+         * @var stdClass $body
+         */
+        $body = json_decode($response->getBody()->getContents());
+
+        if (isset($body->success) && $body->success === false) {
             throw new NumverifyApiFailureException($response);
         }
+
+        return $body;
+    }
+
+    /**
+     * Creates a Guzzle HandlerStack and adds the CacheMiddleware if 'cachePath' exists within the
+     * given $options array, and it is a valid directory.
+     *
+     * Returns given $options as passed, minus the 'cachePath' as it is not a valid Guzzle option for
+     * the client.
+     *
+     * @param  array<string, mixed>  $options
+     * @return array<string, mixed>
+     */
+    private function buildCacheHandler(array $options): array
+    {
+        /** @var string|null $cachePath */
+        $cachePath = $options['cachePath'] ?? null;
+
+        if ($cachePath !== null && is_dir($cachePath) && is_writable($cachePath)) {
+            $handlerStack = HandlerStack::create();
+            $handlerStack->push(middleware: new CacheMiddleware(cacheStrategy: new PrivateCacheStrategy(
+                cache: new Psr6CacheStorage(cachePool: new FilesystemAdapter(namespace: 'numverify', defaultLifetime: 300, directory: $cachePath))
+            )), name: 'cache');
+
+            unset($options['cachePath']);
+            $options += ['handler' => $handlerStack];
+        }
+
+        return $options;
     }
 }

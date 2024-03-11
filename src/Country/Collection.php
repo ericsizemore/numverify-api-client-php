@@ -2,123 +2,119 @@
 
 namespace Numverify\Country;
 
+use Countable;
+use Iterator;
+use JsonSerializable;
+use LogicException;
+
+use function count;
+use function current;
+use function key;
+use function next;
+use function reset;
+
 /**
  * Country Collection
  * Role: Collection of callable countries
- * @implements \Iterator<Country>
+ *
+ * @implements Iterator<Country>
  */
-class Collection implements \Iterator, \Countable, \JsonSerializable
+class Collection implements Iterator, Countable, JsonSerializable
 {
     /** @var Country[] */
-    private $countriesByCountryCode = [];
+    private array $byCountryCode = [];
 
     /** @var Country[] */
-    private $countriesByName = [];
+    private array $byName = [];
 
     /**
-     * Collection constructor
-     *
-     * @param Country ...$countries
+     * Collection constructor.
      */
     public function __construct(Country ...$countries)
     {
         foreach ($countries as $country) {
-            $this->countriesByCountryCode[$country->getCountryCode()] = $country;
-            $this->countriesByName[$country->getCountryName()]        = $country;
+            $this->byCountryCode[$country->getCountryCode()] = $country;
+            $this->byName[$country->getCountryName()]        = $country;
         }
     }
 
     /**
-     * Find country by country code
-     *
-     * @param string $countryCode
-     *
-     * @return Country|null
+     * Find country by country code.
      */
     public function findByCountryCode(string $countryCode): ?Country
     {
-        return $this->countriesByCountryCode[$countryCode] ?? null;
+        return $this->byCountryCode[$countryCode] ?? null;
     }
 
     /**
-     * Find country by name
-     *
-     * @param string $countryName
-     *
-     * @return Country|null
+     * Find country by name.
      */
     public function findByCountryName(string $countryName): ?Country
     {
-        return $this->countriesByName[$countryName] ?? null;
+        return $this->byName[$countryName] ?? null;
     }
 
     /**
-     * Countable interface
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function count(): int
     {
-        return count($this->countriesByCountryCode);
+        return count($this->byCountryCode);
     }
 
     /**
-     * JsonSerializable interface
+     * {@inheritdoc}
      *
      * @return object[]
      */
     public function jsonSerialize(): array
     {
-        return $this->countriesByCountryCode;
+        return $this->byCountryCode;
     }
 
     /**
-     * Iterator interface
+     * {@inheritdoc}
      */
     public function rewind(): void
     {
-        reset($this->countriesByCountryCode);
+        reset($this->byCountryCode);
     }
 
     /**
-     * Iterator interface
-     *
-     * @return Country
+     * {@inheritdoc}
      */
     public function current(): Country
     {
-        $country = current($this->countriesByCountryCode);
+        $country = current($this->byCountryCode);
+
         if ($country === false) {
-            throw new \LogicException('Iteration error - current returned false');
+            throw new LogicException('Iteration error - current returned false');
         }
+
         return $country;
     }
 
     /**
-     * Iterator interface
-     *
-     * @return int|string|null
+     * {@inheritdoc}
      */
-    public function key()
+    public function key(): int | string | null
     {
-        return key($this->countriesByCountryCode);
+        return key($this->byCountryCode);
     }
 
     /**
-     * Iterator interface
+     * {@inheritdoc}
      */
     public function next(): void
     {
-        next($this->countriesByCountryCode);
+        next($this->byCountryCode);
     }
 
     /**
-     * Iterator interface
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function valid(): bool
     {
-        return key($this->countriesByCountryCode) !== null;
+        return key($this->byCountryCode) !== null;
     }
 }

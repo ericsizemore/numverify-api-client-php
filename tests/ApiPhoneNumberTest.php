@@ -2,243 +2,187 @@
 
 namespace Numverify\Tests;
 
-use Numverify;
+use GuzzleHttp\{
+    ClientInterface,
+    Handler\MockHandler,
+    HandlerStack,
+    Psr7\Response
+};
+use Iterator;
+use PHPUnit\Framework\{
+    Attributes\CoversClass,
+    Attributes\DataProvider,
+    TestCase,
+    MockObject\MockObject
+};
+use Numverify\{
+    Api,
+    Exception\NumverifyApiFailureException,
+    Exception\NumverifyApiResponseException,
+    PhoneNumber\Factory,
+    PhoneNumber\InvalidPhoneNumber,
+    PhoneNumber\ValidPhoneNumber
+};
 
-class ApiPhoneNumberTest extends \PHPUnit\Framework\TestCase
+/**
+ * @internal
+ */
+#[CoversClass(InvalidPhoneNumber::class)]
+#[CoversClass(ValidPhoneNumber::class)]
+#[CoversClass(Api::class)]
+#[CoversClass(Factory::class)]
+#[CoversClass(NumverifyApiFailureException::class)]
+class ApiPhoneNumberTest extends TestCase
 {
     private const ACCESS_KEY = 'SomeAccessKey';
 
-    /* ********************** *
-     * API SUCCESS TEST CASES
-     * ********************** */
+    /**
+     * @var string[]
+     */
+    private const RESPONSES = [
+        'valid'        => '{"valid": true, "number": "14158586273", "local_format": "4158586273", "international_format": "+14158586273", "country_prefix": "+1", "country_code": "US", "country_name": "United States of America", "location": "Novato", "carrier": "AT&T Mobility LLC", "line_type": "mobile"}',
+        'invalid'      => '{"valid":false, "number":"183155511", "local_format":"", "international_format":"", "country_prefix":"", "country_code":"", "country_name":"", "location":"", "carrier":"", "line_type":null}',
+        'error'        => '{"success":false, "error":{"code":101, "type":"invalid_access_key", "info":"You have not supplied a valid API Access Key. [Technical Support: support@apilayer.com]"}}',
+        'missingField' => '{"valid": true, "number": "14158586273", "local_format": "4158586273", "international_format": "+14158586273", "country_prefix": "+1", "country_code": "US", "country_name": "United States of America", "location": "Novato", "line_type": "mobile"}',
+    ];
 
     /**
-     * @testCase     validatePhoneNumber success - valid phone number
-     * @dataProvider dataProviderForHttp
-     * @param        bool $useHttps
+     * Given a client.
      */
-    public function testValidatePhoneNumberValidPhoneNumber(bool $useHttps)
-    {
-        // Given
-        $response = $this->getMockBuilder(\Psr\Http\Message\ResponseInterface::class)->getMock();
-        $response->method('getStatusCode')->willReturn(200);
-        $response->method('getBody')
-            ->willReturn('{
-                "valid": true,
-                "number": "14158586273",
-                "local_format": "4158586273",
-                "international_format": "+14158586273",
-                "country_prefix": "+1",
-                "country_code": "US",
-                "country_name": "United States of America",
-                "location": "Novato",
-                "carrier": "AT&T Mobility LLC",
-                "line_type": "mobile"
-            }');
-        $client = $this->createPartialMock(\GuzzleHttp\Client::class, ['request']);
-        $client->method('request')->willReturn($response);
+    private function aClient(
+        string $accessKey = self::ACCESS_KEY,
+        bool $useHttps = false,
+        ?ClientInterface $client = null,
+        ?MockHandler $mockHandler = null
+    ): Api&MockObject {
+        // Create a mock
+        $handlerStack = HandlerStack::create($mockHandler);
 
-        // And
-        $api = new Numverify\Api(self::ACCESS_KEY, $useHttps, $client);
-
-        // When
-        $phoneNumberToValidate = '14158586273';
-        $phoneNumber = $api->validatePhoneNumber($phoneNumberToValidate);
-
-        // Then
-        $this->assertInstanceOf(Numverify\PhoneNumber\ValidPhoneNumber::class, $phoneNumber);
+        return $this
+            ->getMockBuilder(Api::class)
+            ->setConstructorArgs([$accessKey, $useHttps, $client, ['handler' => $handlerStack]])
+            ->onlyMethods([])
+            ->getMock();
     }
 
     /**
-     * @testCase     validatePhoneNumber success - valid phone number using local format and country code
-     * @dataProvider dataProviderForHttp
-     * @param        bool $useHttps
+     * @testCase validatePhoneNumber success - valid phone number.
      */
-    public function testValidatePhoneNumberValidPhoneNumberUsingLocalFormatAndCountryCode(bool $useHttps)
+    #[DataProvider('dataProviderForHttp')]
+    public function testValidatePhoneNumberValidPhoneNumber(bool $useHttps): void
     {
-        // Given
-        $response = $this->getMockBuilder(\Psr\Http\Message\ResponseInterface::class)->getMock();
-        $response->method('getStatusCode')->willReturn(200);
-        $response->method('getBody')
-            ->willReturn('{
-                "valid": true,
-                "number": "14158586273",
-                "local_format": "4158586273",
-                "international_format": "+14158586273",
-                "country_prefix": "+1",
-                "country_code": "US",
-                "country_name": "United States of America",
-                "location": "Novato",
-                "carrier": "AT&T Mobility LLC",
-                "line_type": "mobile"
-            }');
-        $client = $this->createPartialMock(\GuzzleHttp\Client::class, ['request']);
-        $client->method('request')->willReturn($response);
+        $mockHandler = new MockHandler([
+            new Response(200, body: self::RESPONSES['valid']),
+        ]);
+        $apiStub = $this->aClient(self::ACCESS_KEY, $useHttps, mockHandler: $mockHandler);
 
-        // And
-        $api = new Numverify\Api(self::ACCESS_KEY, $useHttps, $client);
+        $phoneNumberToValidate = '14158586273';
+        $phoneNumber           = $apiStub->validatePhoneNumber($phoneNumberToValidate);
+        self::assertInstanceOf(ValidPhoneNumber::class, $phoneNumber);
+    }
 
-        // When
+    /**
+     * @testCase validatePhoneNumber success - valid phone number using local format and country code.
+     */
+    #[DataProvider('dataProviderForHttp')]
+    public function testValidatePhoneNumberValidPhoneNumberUsingLocalFormatAndCountryCode(bool $useHttps): void
+    {
+        $mockHandler = new MockHandler([
+            new Response(200, body: self::RESPONSES['valid']),
+        ]);
+        $apiStub = $this->aClient(self::ACCESS_KEY, $useHttps, mockHandler: $mockHandler);
+
         $phoneNumberToValidate = '4158586273';
-        $countryCode = 'US';
-        $phoneNumber = $api->validatePhoneNumber($phoneNumberToValidate, $countryCode);
-
-        // Then
-        $this->assertInstanceOf(Numverify\PhoneNumber\ValidPhoneNumber::class, $phoneNumber);
+        $countryCode           = 'US';
+        $phoneNumber           = $apiStub->validatePhoneNumber($phoneNumberToValidate, $countryCode);
+        self::assertInstanceOf(ValidPhoneNumber::class, $phoneNumber);
     }
 
     /**
-     * @testCase     validatePhoneNumber success - invalid phone number
-     * @dataProvider dataProviderForHttp
-     * @param        bool $useHttps
+     * @testCase validatePhoneNumber success - invalid phone number.
      */
-    public function testValidatePhoneNumberInvalidPhoneNumber(bool $useHttps)
+    #[DataProvider('dataProviderForHttp')]
+    public function testValidatePhoneNumberInvalidPhoneNumber(bool $useHttps): void
     {
-        // Given
-        $response = $this->getMockBuilder(\Psr\Http\Message\ResponseInterface::class)->getMock();
-        $response->method('getStatusCode')->willReturn(200);
-        $response->method('getBody')
-            ->willReturn('{
-                "valid":false,
-                "number":"183155511",
-                "local_format":"",
-                "international_format":"",
-                "country_prefix":"",
-                "country_code":"",
-                "country_name":"",
-                "location":"",
-                "carrier":"",
-                "line_type":null
-            }');
-        $client = $this->createPartialMock(\GuzzleHttp\Client::class, ['request']);
-        $client->method('request')->willReturn($response);
+        $mockHandler = new MockHandler([
+            new Response(200, body: self::RESPONSES['invalid']),
+        ]);
+        $apiStub = $this->aClient(self::ACCESS_KEY, $useHttps, mockHandler: $mockHandler);
 
-        // And
-        $api = new Numverify\Api(self::ACCESS_KEY, $useHttps, $client);
-
-        // When
         $phoneNumberToValidate = '18314262511';
-        $phoneNumber = $api->validatePhoneNumber($phoneNumberToValidate);
-
-        // Then
-        $this->assertInstanceOf(Numverify\PhoneNumber\InvalidPhoneNumber::class, $phoneNumber);
+        $phoneNumber           = $apiStub->validatePhoneNumber($phoneNumberToValidate);
+        self::assertInstanceOf(InvalidPhoneNumber::class, $phoneNumber);
     }
 
-    /* ******************** *
-     * EXCEPTION TEST CASES
-     * ******************** */
-
     /**
-     * @testCase     validatePhoneNumber exception - invalid access key
-     * @dataProvider dataProviderForHttp
-     * @param        bool $useHttps
+     * @testCase validatePhoneNumber exception - invalid access key.
      */
-    public function testValidatePhoneNumberInvalidAccessKey(bool $useHttps)
+    #[DataProvider('dataProviderForHttp')]
+    public function testValidatePhoneNumberInvalidAccessKey(bool $useHttps): void
     {
-        // Given
-        $response = $this->getMockBuilder(\Psr\Http\Message\ResponseInterface::class)->getMock();
-        $response->method('getStatusCode')->willReturn(200);
-        $response->method('getBody')
-            ->willReturn('{
-                "success":false,
-                "error":{
-                    "code":101,
-                    "type":"invalid_access_key",
-                    "info":"You have not supplied a valid API Access Key. [Technical Support: support@apilayer.com]"
-                }
-            }');
-        $client = $this->createPartialMock(\GuzzleHttp\Client::class, ['request']);
-        $client->method('request')->willReturn($response);
+        $mockHandler = new MockHandler([
+            new Response(200, body: self::RESPONSES['error']),
+        ]);
+        $apiStub = $this->aClient('InvalidAccessKey', $useHttps, mockHandler: $mockHandler);
 
-        // And
-        $invalidAccessKey = 'InvalidAccessKey';
-        $api = new Numverify\Api($invalidAccessKey, $useHttps, $client);
-
-        // Then
-        $this->expectException(Numverify\Exception\NumverifyApiFailureException::class);
+        $this->expectException(NumverifyApiFailureException::class);
         $this->expectExceptionMessage('Type:invalid_access_key Code:101 Info:You have not supplied a valid API Access Key. [Technical Support: support@apilayer.com]');
-
-        // When
         $phoneNumberToValidate = '18314262511';
-        $phoneNumber = $api->validatePhoneNumber($phoneNumberToValidate);
+        $apiStub->validatePhoneNumber($phoneNumberToValidate);
     }
 
     /**
-     * @testCase     validatePhoneNumber exception - API bad response
-     * @dataProvider dataProviderForHttp
-     * @param        bool $useHttps
+     * @testCase validatePhoneNumber exception - Server Error.
      */
-    public function testValidatePhoneNumberBadResponse(bool $useHttps)
+    #[DataProvider('dataProviderForHttp')]
+    public function testValidatePhoneNumberServerError(bool $useHttps): void
     {
-        // Given
-        $response = $this->getMockBuilder(\Psr\Http\Message\ResponseInterface::class)->getMock();
-        $response->method('getStatusCode')->willReturn(500);
-        $response->method('getReasonPhrase')->willReturn('Internal Server Error');
-        $response->method('getBody')->willReturn('server error');
-        $client = $this->createPartialMock(\GuzzleHttp\Client::class, ['request']);
-        $client->method('request')->willReturn($response);
+        $mockHandler = new MockHandler([
+            new Response(500, body: ''),
+        ]);
+        $apiStub = $this->aClient(self::ACCESS_KEY, $useHttps, mockHandler: $mockHandler);
 
-        // And
-        $api = new Numverify\Api(self::ACCESS_KEY, $useHttps, $client);
-
-        // Then
-        $this->expectException(Numverify\Exception\NumverifyApiFailureException::class);
-        $this->expectExceptionMessage('Unknown error - 500 Internal Server Error');
-
-        // When
         $phoneNumberToValidate = '18314262511';
-        $phoneNumber = $api->validatePhoneNumber($phoneNumberToValidate);
+        $this->expectException(NumverifyApiFailureException::class);
+        $apiStub->validatePhoneNumber($phoneNumberToValidate);
     }
 
     /**
-     * @testCase     validatePhoneNumber exception - API response missing expected field "carrier"
-     * @dataProvider dataProviderForHttp
-     * @param        bool $useHttps
+     * @testCase validatePhoneNumber exception - Bad response.
      */
-    public function testValidatePhoneNumberApiResponseMissingData(bool $useHttps)
+    #[DataProvider('dataProviderForHttp')]
+    public function testValidatePhoneNumberBadResponse(bool $useHttps): void
     {
-        // Given
-        $response = $this->getMockBuilder(\Psr\Http\Message\ResponseInterface::class)->getMock();
-        $response->method('getStatusCode')->willReturn(200);
-        $response->method('getBody')
-            ->willReturn('{
-                "valid": true,
-                "number": "14158586273",
-                "local_format": "4158586273",
-                "international_format": "+14158586273",
-                "country_prefix": "+1",
-                "country_code": "US",
-                "country_name": "United States of America",
-                "location": "Novato",
-                "line_type": "mobile"
-            }');
-        $client = $this->createPartialMock(\GuzzleHttp\Client::class, ['request']);
-        $client->method('request')->willReturn($response);
+        $mockHandler = new MockHandler([
+            new Response(202, body: ''),
+        ]);
+        $apiStub = $this->aClient(self::ACCESS_KEY, $useHttps, mockHandler: $mockHandler);
 
-        // And
-        $api = new Numverify\Api(self::ACCESS_KEY, $useHttps, $client);
+        $phoneNumberToValidate = '18314262511';
+        $this->expectException(NumverifyApiFailureException::class);
+        $apiStub->validatePhoneNumber($phoneNumberToValidate);
+    }
 
-        // Then
-        $this->expectException(Numverify\Exception\NumverifyApiResponseException::class);
-        $this->expectExceptionMessage('API response does not contain the expected field carrier');
+    /**
+     * @testCase validatePhoneNumber exception - API response missing expected field "carrier".
+     */
+    #[DataProvider('dataProviderForHttp')]
+    public function testValidatePhoneNumberApiResponseMissingData(bool $useHttps): void
+    {
+        $mockHandler = new MockHandler([
+            new Response(200, body: self::RESPONSES['missingField']),
+        ]);
+        $apiStub = $this->aClient(self::ACCESS_KEY, $useHttps, mockHandler: $mockHandler);
 
-        // When
+        $this->expectException(NumverifyApiResponseException::class);
+        $this->expectExceptionMessage('API response does not contain one or more expected fields: carrier');
         $phoneNumberToValidate = '14158586273';
-        $phoneNumber = $api->validatePhoneNumber($phoneNumberToValidate);
+        $apiStub->validatePhoneNumber($phoneNumberToValidate);
     }
 
-    /* ************* *
-     * DATA PROVIDER
-     * ************* */
-
-    /**
-     * @return array
-     */
-    public function dataProviderForHttp(): array
+    public static function dataProviderForHttp(): Iterator
     {
-        return [
-            [true],
-            [false],
-        ];
+        yield [true];
+        yield [false];
     }
 }

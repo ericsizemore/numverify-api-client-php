@@ -2,172 +2,51 @@
 
 namespace Numverify\Tests\PhoneNumber;
 
-use Numverify\Exception\NumverifyApiResponseException;
-use Numverify\PhoneNumber\ValidPhoneNumber;
+use Iterator;
+use Numverify\{
+    Exception\NumverifyApiResponseException,
+    PhoneNumber\ValidPhoneNumber
+};
+use PHPUnit\Framework\{
+    Attributes\DataProvider,
+    Attributes\CoversClass,
+    TestCase
+};
+use stdClass;
 
-class ValidPhoneNumberTest extends \PHPUnit\Framework\TestCase
+use function json_decode;
+use function json_encode;
+use function print_r;
+
+/**
+ * @internal
+ */
+#[CoversClass(ValidPhoneNumber::class)]
+class ValidPhoneNumberTest extends TestCase
 {
-    /**
-     * @testCase isValid
-     */
-    public function testIsValid()
-    {
-        // Given
-        $phoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
-
-        // When
-        $isValid = $phoneNumber->isValid();
-
-        // Then
-        $this->assertTrue($isValid);
-    }
-
-    /**
-     * @testCase getters
-     */
-    public function testGetters()
-    {
-        // Given
-        $phoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
-
-        // When
-        $number              = $phoneNumber->getNumber();
-        $localFormat         = $phoneNumber->getLocalFormat();
-        $internationalFormat = $phoneNumber->getInternationalFormat();
-        $countryPrefix       = $phoneNumber->getCountryPrefix();
-        $countryCode         = $phoneNumber->getCountryCode();
-        $countryName         = $phoneNumber->getCountryName();
-        $location            = $phoneNumber->getLocation();
-        $carrier             = $phoneNumber->getCarrier();
-        $lineType            = $phoneNumber->getLineType();
-
-        // Then
-        $this->assertSame(self::NUMBER, $number);
-        $this->assertSame(self::LOCAL_FORMAT, $localFormat);
-        $this->assertSame(self::INTERNATIONAL_FORMAT, $internationalFormat);
-        $this->assertSame(self::COUNTRY_PREFIX, $countryPrefix);
-        $this->assertSame(self::COUNTRY_CODE, $countryCode);
-        $this->assertSame(self::COUNTRY_NAME, $countryName);
-        $this->assertSame(self::LOCATION, $location);
-        $this->assertSame(self::CARRIER, $carrier);
-        $this->assertSame(self::LINE_TYPE, $lineType);
-    }
-
-    /**
-     * @testCase String representation
-     */
-    public function testToString()
-    {
-        // Given
-        $phoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
-
-        // When
-        $stringRepresentation = (string) $phoneNumber;
-
-        // Then
-        $this->assertSame(self::NUMBER, $stringRepresentation);
-    }
-
-    /**
-     * @testCase JsonSerializable interface
-     */
-    public function testJsonSerialize()
-    {
-        // Given
-        $phoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
-
-        // When
-        $json = json_encode($phoneNumber);
-
-        // Then
-        $object = json_decode($json);
-        $this->assertSame(self::VALID, $object->valid);
-        $this->assertSame(self::NUMBER, $object->number);
-        $this->assertSame(self::LOCAL_FORMAT, $object->localFormat);
-        $this->assertSame(self::INTERNATIONAL_FORMAT, $object->internationalFormat);
-        $this->assertSame(self::COUNTRY_PREFIX, $object->countryPrefix);
-        $this->assertSame(self::COUNTRY_CODE, $object->countryCode);
-        $this->assertSame(self::COUNTRY_NAME, $object->countryName);
-        $this->assertSame(self::LOCATION, $object->location);
-        $this->assertSame(self::CARRIER, $object->carrier);
-        $this->assertSame(self::LINE_TYPE, $object->lineType);
-    }
-
-    /**
-     * @testCase Debug info
-     */
-    public function testDebugInfo()
-    {
-        // Given
-        $phoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
-
-        // When
-        $debugInfo = print_r($phoneNumber, true);
-
-        // Then
-        $this->assertStringContainsString('valid', $debugInfo);
-        $this->assertStringContainsString('number', $debugInfo);
-        $this->assertStringContainsString('localFormat', $debugInfo);
-        $this->assertStringContainsString('internationalFormat', $debugInfo);
-        $this->assertStringContainsString('countryPrefix', $debugInfo);
-        $this->assertStringContainsString('countryCode', $debugInfo);
-        $this->assertStringContainsString('countryName', $debugInfo);
-        $this->assertStringContainsString('location', $debugInfo);
-        $this->assertStringContainsString('carrier', $debugInfo);
-        $this->assertStringContainsString('lineType', $debugInfo);
-    }
-
-    /**
-     * @testCase     Missing constructor data exception
-     * @dataProvider dataProviderForFields
-     * @param        string $missingField
-     */
-    public function testPhoneNumberDataValidation(string $missingField)
-    {
-        // Given
-        unset($this->validatedPhoneNumberData->$missingField);
-
-        // Then
-        $this->expectException(NumverifyApiResponseException::class);
-
-        // When
-        $phoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
-    }
-
-    /**
-     * @return array
-     */
-    public function dataProviderForFields(): array
-    {
-        return [
-            ['valid'],
-            ['number'],
-            ['local_format'],
-            ['international_format'],
-            ['country_prefix'],
-            ['country_code'],
-            ['country_name'],
-            ['location'],
-            ['carrier'],
-            ['line_type'],
-        ];
-    }
-
     private const VALID                = true;
+
     private const NUMBER               = '14158586273';
+
     private const LOCAL_FORMAT         = '4158586273';
+
     private const INTERNATIONAL_FORMAT = '+14158586273';
+
     private const COUNTRY_PREFIX       = '+1';
+
     private const COUNTRY_CODE         = 'US';
+
     private const COUNTRY_NAME         = 'United States of America';
+
     private const LOCATION             = 'Novato';
+
     private const CARRIER              = 'AT&T Mobility LLC';
+
     private const LINE_TYPE            = 'mobile';
 
-    /** @var object */
-    private $validatedPhoneNumberData;
+    private stdClass $validatedPhoneNumberData;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->validatedPhoneNumberData = (object) [
             'valid'                => self::VALID,
@@ -181,5 +60,126 @@ class ValidPhoneNumberTest extends \PHPUnit\Framework\TestCase
             'carrier'              => self::CARRIER,
             'line_type'            => self::LINE_TYPE,
         ];
+    }
+
+    /**
+     * @testCase isValid
+     */
+    public function testIsValid(): void
+    {
+        $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
+
+        $isValid = $validPhoneNumber->isValid();
+        self::assertTrue($isValid);
+    }
+
+    /**
+     * @testCase getters.
+     */
+    public function testGetters(): void
+    {
+        $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
+
+        $number              = $validPhoneNumber->getNumber();
+        $localFormat         = $validPhoneNumber->getLocalFormat();
+        $internationalFormat = $validPhoneNumber->getInternationalFormat();
+        $countryPrefix       = $validPhoneNumber->getCountryPrefix();
+        $countryCode         = $validPhoneNumber->getCountryCode();
+        $countryName         = $validPhoneNumber->getCountryName();
+        $location            = $validPhoneNumber->getLocation();
+        $carrier             = $validPhoneNumber->getCarrier();
+        $lineType            = $validPhoneNumber->getLineType();
+
+        self::assertSame(self::NUMBER, $number);
+        self::assertSame(self::LOCAL_FORMAT, $localFormat);
+        self::assertSame(self::INTERNATIONAL_FORMAT, $internationalFormat);
+        self::assertSame(self::COUNTRY_PREFIX, $countryPrefix);
+        self::assertSame(self::COUNTRY_CODE, $countryCode);
+        self::assertSame(self::COUNTRY_NAME, $countryName);
+        self::assertSame(self::LOCATION, $location);
+        self::assertSame(self::CARRIER, $carrier);
+        self::assertSame(self::LINE_TYPE, $lineType);
+    }
+
+    /**
+     * @testCase String representation.
+     */
+    public function testToString(): void
+    {
+        $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
+
+        $stringRepresentation = (string) $validPhoneNumber;
+        self::assertSame(self::NUMBER, $stringRepresentation);
+    }
+
+    /**
+     * @testCase JsonSerializable interface.
+     */
+    public function testJsonSerialize(): void
+    {
+        $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
+
+        /** @var non-empty-string $json */
+        $json = json_encode($validPhoneNumber);
+
+        /** @var stdClass $object */
+        $object = json_decode($json);
+        self::assertSame(self::VALID, $object->valid);
+        self::assertSame(self::NUMBER, $object->number);
+        self::assertSame(self::LOCAL_FORMAT, $object->localFormat);
+        self::assertSame(self::INTERNATIONAL_FORMAT, $object->internationalFormat);
+        self::assertSame(self::COUNTRY_PREFIX, $object->countryPrefix);
+        self::assertSame(self::COUNTRY_CODE, $object->countryCode);
+        self::assertSame(self::COUNTRY_NAME, $object->countryName);
+        self::assertSame(self::LOCATION, $object->location);
+        self::assertSame(self::CARRIER, $object->carrier);
+        self::assertSame(self::LINE_TYPE, $object->lineType);
+    }
+
+    /**
+     * @testCase Debug info.
+     */
+    public function testDebugInfo(): void
+    {
+        $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
+
+        $debugInfo = print_r($validPhoneNumber, true);
+
+        self::assertStringContainsString('valid', $debugInfo);
+        self::assertStringContainsString('number', $debugInfo);
+        self::assertStringContainsString('localFormat', $debugInfo);
+        self::assertStringContainsString('internationalFormat', $debugInfo);
+        self::assertStringContainsString('countryPrefix', $debugInfo);
+        self::assertStringContainsString('countryCode', $debugInfo);
+        self::assertStringContainsString('countryName', $debugInfo);
+        self::assertStringContainsString('location', $debugInfo);
+        self::assertStringContainsString('carrier', $debugInfo);
+        self::assertStringContainsString('lineType', $debugInfo);
+    }
+
+    /**
+     * @testCase Missing constructor data exception.
+     */
+    #[DataProvider('dataProviderForFields')]
+    public function testPhoneNumberDataValidation(string $missingField): void
+    {
+        unset($this->validatedPhoneNumberData->$missingField);
+
+        $this->expectException(NumverifyApiResponseException::class);
+        new ValidPhoneNumber($this->validatedPhoneNumberData);
+    }
+
+    public static function dataProviderForFields(): Iterator
+    {
+        yield ['valid'];
+        yield ['number'];
+        yield ['local_format'];
+        yield ['international_format'];
+        yield ['country_prefix'];
+        yield ['country_code'];
+        yield ['country_name'];
+        yield ['location'];
+        yield ['carrier'];
+        yield ['line_type'];
     }
 }

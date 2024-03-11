@@ -2,55 +2,50 @@
 
 namespace Numverify\PhoneNumber;
 
+use JsonSerializable;
 use Numverify\Exception\NumverifyApiResponseException;
+use stdClass;
+use Stringable;
+
+use function implode;
+use function sprintf;
 
 /**
  * InvalidPhoneNumber
  * Role: Value object to represent a phone number that the Numverify returned as invalid
+ * @see \Numverify\Tests\PhoneNumber\InvalidPhoneNumberTest
  */
-class InvalidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
+class InvalidPhoneNumber implements PhoneNumberInterface, JsonSerializable, Stringable
 {
-    /** @var bool */
-    private $valid;
+    private readonly bool $valid;
 
-    /** @var string */
-    private $number;
+    private readonly string $number;
 
     private const FIELDS = ['valid', 'number'];
 
     /**
-     * InvalidPhoneNumber constructor
-     *
-     * @param \stdClass $validatedPhoneNumber
+     * InvalidPhoneNumber constructor.
      */
-    public function __construct(\stdClass $validatedPhoneNumber)
+    public function __construct(stdClass $validatedPhoneNumber)
     {
         $this->verifyPhoneNumberData($validatedPhoneNumber);
 
-        $this->valid  = boolval($validatedPhoneNumber->valid);
+        $this->valid  = (bool) $validatedPhoneNumber->valid;
         $this->number = $validatedPhoneNumber->number;
     }
 
-    /**
-     * @return bool
-     */
     public function isValid(): bool
     {
         return false;
     }
 
-    /**
-     * @return string
-     */
     public function getNumber(): string
     {
         return $this->number;
     }
 
     /**
-     * String representation
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function __toString(): string
     {
@@ -58,9 +53,9 @@ class InvalidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * JsonSerialize interface
+     * {@inheritdoc}
      *
-     * @return mixed[]
+     * @return array<string, bool|string>
      */
     public function jsonSerialize(): array
     {
@@ -71,9 +66,9 @@ class InvalidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * Debug info
+     * Debug info.
      *
-     * @return mixed[]
+     * @return array<string, bool|string>
      */
     public function __debugInfo(): array
     {
@@ -81,18 +76,25 @@ class InvalidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * Verify the phone number data contains the expected fields
-     *
-     * @param \stdClass $phoneNumberData
+     * Verify the phone number data contains the expected fields.
      *
      * @throws NumverifyApiResponseException
      */
-    private function verifyPhoneNumberData(\stdClass $phoneNumberData): void
+    private function verifyPhoneNumberData(stdClass $phoneNumberData): void
     {
+        $missingFields = [];
+
         foreach (self::FIELDS as $field) {
             if (!isset($phoneNumberData->$field)) {
-                throw new NumverifyApiResponseException("API response does not contain the expected field $field", $phoneNumberData);
+                $missingFields[] = $field;
             }
+        }
+
+        if ($missingFields !== []) {
+            throw new NumverifyApiResponseException(sprintf(
+                "API response does not contain one or more expected fields: %s",
+                implode(', ', $missingFields)
+            ), $phoneNumberData);
         }
     }
 }

@@ -1,25 +1,26 @@
 <?php
 
-namespace Numverify\Tests\PhoneNumber;
+namespace Numverify\Tests\Exception;
 
+use PHPUnit\Framework\TestCase;
 use Numverify\Exception\NumverifyApiResponseException;
+use stdClass;
 
-class NumverifyApiResponseExceptionTest extends \PHPUnit\Framework\TestCase
+/**
+ * @internal
+ */
+class NumverifyApiResponseExceptionTest extends TestCase
 {
     /**
      * @testCase getMessage
      */
-    public function testGetMessage()
+    public function testGetMessage(): void
     {
-        // Given
-        $expectedMessage = 'Test message';
-        $phoneNumberData = new \stdClass();
-        $e               = new NumverifyApiResponseException($expectedMessage, $phoneNumberData);
+        $expectedMessage               = 'Test message';
+        $phoneNumberData               = new stdClass();
+        $numverifyApiResponseException = new NumverifyApiResponseException($expectedMessage, $phoneNumberData);
 
-        // When
-        $message = $e->getMessage();
-
-        // Then
-        $this->assertSame($expectedMessage, $message);
+        $message = $numverifyApiResponseException->getMessage();
+        self::assertSame($expectedMessage, $message);
     }
 }

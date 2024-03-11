@@ -2,39 +2,24 @@
 
 namespace Numverify\Country;
 
+use JsonSerializable;
+use Stringable;
+
+use function sprintf;
+
 /**
  * Country
  * Role: Value object that represents a callable country
  */
-class Country implements \JsonSerializable
+readonly class Country implements Stringable, JsonSerializable
 {
-    /** @var string */
-    private $countryCode;
-
-    /** @var string */
-    private $countryName;
-
-    /** @var string */
-    private $dialingCode;
-
     /**
      * Country constructor
-     *
-     * @param string $countryCode
-     * @param string $countryName
-     * @param string $dialingCode
      */
-    public function __construct(string $countryCode, string $countryName, string $dialingCode)
-    {
-        $this->countryCode = $countryCode;
-        $this->countryName = $countryName;
-        $this->dialingCode = $dialingCode;
-    }
+    public function __construct(private string $countryCode, private string $countryName, private string $dialingCode) {}
 
     /**
      * Get country code
-     *
-     * @return string
      */
     public function getCountryCode(): string
     {
@@ -43,8 +28,6 @@ class Country implements \JsonSerializable
 
     /**
      * Get country name
-     *
-     * @return string
      */
     public function getCountryName(): string
     {
@@ -53,8 +36,6 @@ class Country implements \JsonSerializable
 
     /**
      * Get dialing code
-     *
-     * @return string
      */
     public function getDialingCode(): string
     {
@@ -62,10 +43,9 @@ class Country implements \JsonSerializable
     }
 
     /**
-     * String representation
-     * CountryCode: CountryName (DialingCode)
+     * {@inheritdoc}
      *
-     * @return string
+     * CountryCode: CountryName (DialingCode)
      */
     public function __toString(): string
     {
@@ -73,7 +53,7 @@ class Country implements \JsonSerializable
     }
 
     /**
-     * JsonSerializable interface
+     * {@inheritdoc}
      *
      * @return string[]
      */

@@ -2,128 +2,119 @@
 
 namespace Numverify\Tests\PhoneNumber;
 
-use Numverify\Exception\NumverifyApiResponseException;
-use Numverify\PhoneNumber\InvalidPhoneNumber;
+use Iterator;
+use Numverify\{
+    Exception\NumverifyApiResponseException,
+    PhoneNumber\InvalidPhoneNumber
+};
+use PHPUnit\Framework\{
+    Attributes\DataProvider,
+    Attributes\CoversClass,
+    TestCase
+};
+use stdClass;
 
-class InvalidPhoneNumberTest extends \PHPUnit\Framework\TestCase
+use function json_decode;
+use function json_encode;
+use function print_r;
+
+/**
+ * @internal
+ */
+#[CoversClass(InvalidPhoneNumber::class)]
+class InvalidPhoneNumberTest extends TestCase
 {
+    private const VALID  = false;
+
+    private const NUMBER = '14158586273';
+
+    private stdClass $validatedPhoneNumberData;
+
+    protected function setUp(): void
+    {
+        $this->validatedPhoneNumberData = (object) [
+            'valid'  => self::VALID,
+            'number' => self::NUMBER,
+        ];
+    }
+
     /**
      * @testCase isValid
      */
-    public function testIsValid()
+    public function testIsValid(): void
     {
-        // Given
-        $phoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
+        $invalidPhoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
 
-        // When
-        $isValid = $phoneNumber->isValid();
-
-        // Then
-        $this->assertFalse($isValid);
+        $isValid = $invalidPhoneNumber->isValid();
+        self::assertFalse($isValid);
     }
 
     /**
      * @testCase getters
      */
-    public function testGetters()
+    public function testGetters(): void
     {
-        // Given
-        $phoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
+        $invalidPhoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
 
-        // When
-        $number = $phoneNumber->getNumber();
-
-        // Then
-        $this->assertSame(self::NUMBER, $number);
+        $number = $invalidPhoneNumber->getNumber();
+        self::assertSame(self::NUMBER, $number);
     }
 
     /**
      * @testCase String representation
      */
-    public function testToString()
+    public function testToString(): void
     {
-        // Given
-        $phoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
+        $invalidPhoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
 
-        // When
-        $stringRepresentation = (string) $phoneNumber;
-
-        // Then
-        $this->assertSame(self::NUMBER, $stringRepresentation);
+        $stringRepresentation = (string) $invalidPhoneNumber;
+        self::assertSame(self::NUMBER, $stringRepresentation);
     }
 
     /**
      * @testCase JsonSerializable interface
      */
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         // Given
-        $phoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
+        $invalidPhoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
 
-        // When
-        $json = json_encode($phoneNumber);
+        /** @var non-empty-string $json */
+        $json = json_encode($invalidPhoneNumber);
 
-        // Then
+        /** @var stdClass $object */
         $object = json_decode($json);
-        $this->assertSame(self::VALID, $object->valid);
-        $this->assertSame(self::NUMBER, $object->number);
+        self::assertSame(self::VALID, $object->valid);
+        self::assertSame(self::NUMBER, $object->number);
     }
 
     /**
      * @testCase Debug info
      */
-    public function testDebugInfo()
+    public function testDebugInfo(): void
     {
-        // Given
-        $phoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
+        $invalidPhoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
 
-        // When
-        $debugInfo = print_r($phoneNumber, true);
-
-        // Then
-        $this->assertStringContainsString('valid', $debugInfo);
-        $this->assertStringContainsString('number', $debugInfo);
+        $debugInfo = print_r($invalidPhoneNumber, true);
+        self::assertStringContainsString('valid', $debugInfo);
+        self::assertStringContainsString('number', $debugInfo);
     }
 
     /**
      * @testCase     Missing constructor data exception
-     * @dataProvider dataProviderForFields
-     * @param        string $missingField
      */
-    public function testPhoneNumberDataValidation(string $missingField)
+    #[DataProvider('dataProviderForFields')]
+    public function testPhoneNumberDataValidation(string $missingField): void
     {
-        // Given
         unset($this->validatedPhoneNumberData->$missingField);
 
-        // Then
         $this->expectException(NumverifyApiResponseException::class);
-
-        // When
-        $phoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
+        new InvalidPhoneNumber($this->validatedPhoneNumberData);
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForFields(): array
+    public static function dataProviderForFields(): Iterator
     {
-        return [
-            ['valid'],
-            ['number'],
-        ];
-    }
-
-    private const VALID  = false;
-    private const NUMBER = '14158586273';
-
-    /** @var object */
-    private $validatedPhoneNumberData;
-
-    public function setUp(): void
-    {
-        $this->validatedPhoneNumberData = (object) [
-            'valid'                => self::VALID,
-            'number'               => self::NUMBER,
-        ];
+        yield ['valid'];
+        yield ['number'];
     }
 }

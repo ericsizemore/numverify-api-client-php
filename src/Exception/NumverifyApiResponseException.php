@@ -2,24 +2,16 @@
 
 namespace Numverify\Exception;
 
+use RuntimeException;
+use stdClass;
+
 /**
- * Thrown when the Numverify API returns an API response that is unexpected
+ * Thrown when the Numverify API returns an API response that is unexpected.
  */
-class NumverifyApiResponseException extends \RuntimeException
+class NumverifyApiResponseException extends RuntimeException
 {
-    /** @var \stdClass */
-    private $phoneNumberData;
-
-    /**
-     * NumverifyApiResponseException constructor
-     *
-     * @param string    $message
-     * @param \stdClass $phoneNumberData
-     */
-    public function __construct(string $message, \stdClass $phoneNumberData)
+    public function __construct(string $message, private readonly ?stdClass $phoneNumberData = null) // @phpstan-ignore-line
     {
-        $this->phoneNumberData = $phoneNumberData;
-
         parent::__construct($message);
     }
 }

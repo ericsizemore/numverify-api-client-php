@@ -2,58 +2,57 @@
 
 namespace Numverify\PhoneNumber;
 
+use JsonSerializable;
 use Numverify\Exception\NumverifyApiResponseException;
+use stdClass;
+use Stringable;
+
+use function implode;
+use function sprintf;
 
 /**
  * ValidPhoneNumber
- * Role: Value object to represent a phone number that the Numverify returned as valid
+ * Role: Value object to represent a phone number that the Numverify returned as valid.
+ * @see \Numverify\Tests\PhoneNumber\ValidPhoneNumberTest
  */
-class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
+class ValidPhoneNumber implements PhoneNumberInterface, JsonSerializable, Stringable
 {
-    /** @var bool */
-    private $valid;
+    private readonly bool $valid;
 
-    /** @var string */
-    private $number;
+    private readonly string $number;
 
-    /** @var string */
-    private $localFormat;
+    private readonly string $localFormat;
 
-    /** @var string */
-    private $internationalFormat;
+    private readonly string $internationalFormat;
 
-    /** @var string */
-    private $countryPrefix;
+    private readonly string $countryPrefix;
 
-    /** @var string */
-    private $countryCode;
+    private readonly string $countryCode;
 
-    /** @var string */
-    private $countryName;
+    private readonly string $countryName;
 
-    /** @var string */
-    private $location;
+    private readonly string $location;
 
-    /** @var string */
-    private $carrier;
+    private readonly string $carrier;
 
-    /** @var string */
-    private $lineType;
+    private readonly string $lineType;
 
+    /**
+     * @var string[]
+     */
     private const FIELDS = [
-        'valid', 'number', 'local_format', 'international_format', 'country_prefix', 'country_code', 'country_name', 'location', 'carrier', 'line_type',
+        'valid', 'number', 'local_format', 'international_format', 'country_prefix',
+        'country_code', 'country_name', 'location', 'carrier', 'line_type',
     ];
 
     /**
-     * ValidPhoneNumber constructor
-     *
-     * @param \stdClass $validatedPhoneNumberData
+     * ValidPhoneNumber constructor.
      */
-    public function __construct(\stdClass $validatedPhoneNumberData)
+    public function __construct(stdClass $validatedPhoneNumberData)
     {
         $this->verifyPhoneNumberData($validatedPhoneNumberData);
 
-        $this->valid               = boolval($validatedPhoneNumberData->valid);
+        $this->valid               = (bool) $validatedPhoneNumberData->valid;
         $this->number              = $validatedPhoneNumberData->number;
         $this->localFormat         = $validatedPhoneNumberData->local_format;
         $this->internationalFormat = $validatedPhoneNumberData->international_format;
@@ -67,8 +66,6 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
 
     /**
      * Is the phone number valid?
-     *
-     * @return bool
      */
     public function isValid(): bool
     {
@@ -76,9 +73,7 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * Get phone number
-     *
-     * @return string
+     * Get phone number.
      */
     public function getNumber(): string
     {
@@ -86,9 +81,7 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * Get local format
-     *
-     * @return string
+     * Get local format.
      */
     public function getLocalFormat(): string
     {
@@ -96,9 +89,7 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * Get international format
-     *
-     * @return string
+     * Get international format.
      */
     public function getInternationalFormat(): string
     {
@@ -106,9 +97,7 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * Get country prefix
-     *
-     * @return string
+     * Get country prefix.
      */
     public function getCountryPrefix(): string
     {
@@ -116,9 +105,7 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * Get country code
-     *
-     * @return string
+     * Get country code.
      */
     public function getCountryCode(): string
     {
@@ -126,9 +113,7 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * Get country name
-     *
-     * @return string
+     * Get country name.
      */
     public function getCountryName(): string
     {
@@ -136,9 +121,7 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * Get location
-     *
-     * @return string
+     * Get location.
      */
     public function getLocation(): string
     {
@@ -146,9 +129,7 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * Get carrier
-     *
-     * @return string
+     * Get carrier.
      */
     public function getCarrier(): string
     {
@@ -156,9 +137,7 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * Get line type
-     *
-     * @return string
+     * Get line type.
      */
     public function getLineType(): string
     {
@@ -166,9 +145,7 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * String representation
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function __toString(): string
     {
@@ -176,9 +153,20 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * JsonSerialize interface
+     * {@inheritdoc}
      *
-     * @return mixed[]
+     * @return array{
+     *     valid: bool,
+     *     number: string,
+     *     localFormat: string,
+     *     internationalFormat: string,
+     *     countryPrefix: string,
+     *     countryCode: string,
+     *     countryName: string,
+     *     location: string,
+     *     carrier: string,
+     *     lineType: string
+     * }
      */
     public function jsonSerialize(): array
     {
@@ -197,9 +185,20 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * Debug info
+     * Debug info.
      *
-     * @return mixed[]
+     * @return array{
+     *     valid: bool,
+     *     number: string,
+     *     localFormat: string,
+     *     internationalFormat: string,
+     *     countryPrefix: string,
+     *     countryCode: string,
+     *     countryName: string,
+     *     location: string,
+     *     carrier: string,
+     *     lineType: string
+     * }
      */
     public function __debugInfo(): array
     {
@@ -207,18 +206,25 @@ class ValidPhoneNumber implements PhoneNumberInterface, \JsonSerializable
     }
 
     /**
-     * Verify the phone number data contains the expected fields
-     *
-     * @param \stdClass $phoneNumberData
+     * Verify the phone number data contains the expected fields.
      *
      * @throws NumverifyApiResponseException
      */
-    private function verifyPhoneNumberData(\stdClass $phoneNumberData): void
+    private function verifyPhoneNumberData(stdClass $phoneNumberData): void
     {
+        $missingFields = [];
+
         foreach (self::FIELDS as $field) {
             if (!isset($phoneNumberData->$field)) {
-                throw new NumverifyApiResponseException("API response does not contain the expected field $field", $phoneNumberData);
+                $missingFields[] = $field;
             }
+        }
+
+        if ($missingFields !== []) {
+            throw new NumverifyApiResponseException(sprintf(
+                "API response does not contain one or more expected fields: %s",
+                implode(', ', $missingFields)
+            ), $phoneNumberData);
         }
     }
 }
