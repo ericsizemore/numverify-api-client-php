@@ -19,8 +19,8 @@ Forked from [`markrogoyski/numverify-api-client-php`](https://github.com/markrog
   * `Api::__construct` has a new `$options` parameter, which is optional, that can pass options to Guzzle Client.
   * `NumverifyApiFailureException` is wrapped around `\GuzzleHttp\Exception\ServerException`
   * `Api::validateResponse()` changed to `Api::validateAndDecodeResponse()`.
-    * Old signature: ```php private function validateResponse(\Psr\Http\Message\ResponseInterface $response): void ```
-    * New signature: ```php private function validateAndDecodeResponse(ResponseInterface $response, bool $asArray = false): stdClass | array ```
+    * Old signature: `private function validateResponse(\Psr\Http\Message\ResponseInterface $response): void`
+    * New signature: `private function validateAndDecodeResponse(ResponseInterface $response, bool $asArray = false): stdClass | array`
     * It now checks `getStatusCode` and the response body for `success`. Returns the decoded jSON.
   * Updated unit tests to use Guzzle's `MockHandler`.
     * Fixed tests and PHPUnit method calls/attributes/etc. to be in line with PHPUnit 11+

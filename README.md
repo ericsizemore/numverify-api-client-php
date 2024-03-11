@@ -13,7 +13,7 @@ Numverify phone number validation and country API client library for PHP.
 [![Downloads per Month](https://img.shields.io/packagist/dm/esi/numverify-api-client-php.svg)](https://packagist.org/packages/esi/numverify-api-client-php)
 [![License](https://img.shields.io/packagist/l/esi/numverify-api-client-php.svg)](https://packagist.org/packages/esi/numverify-api-client-php)
 
-This library is a fork of [`markrogoyski/numverify-api-client-php`](https://github.com/markrogoyski/numverify-api-client-php). See [Acknowledgements](#scknowledgements) for more information.
+This library is a fork of [`markrogoyski/numverify-api-client-php`](https://github.com/markrogoyski/numverify-api-client-php). See [Acknowledgements](#acknowledgements) for more information.
 
 ## Features
 
@@ -62,12 +62,8 @@ $ php composer.phar require esi/numverify-api-client-php:3.*
 ```
 
 ### Minimum Requirements
+
 * PHP 8.2 with `ext-json`.
-
-Note:
-
-* For PHP 7.2, use v2.0 of the original library (`require markrogoyski/numverify-api-client-php:2.*`)
-* For PHP 7.0 and 7.1, use v1.0 of the original library (`require markrogoyski/numverify-api-client-php:1.*`)
 
 ## Usage
 
