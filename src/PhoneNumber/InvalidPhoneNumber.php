@@ -109,7 +109,7 @@ class InvalidPhoneNumber implements PhoneNumberInterface, JsonSerializable, Stri
             throw new NumverifyApiResponseException(sprintf(
                 "API response does not contain one or more expected fields: %s",
                 implode(', ', $missingFields)
-            ), $phoneNumberData);
+            ));
         }
     }
 }

@@ -31,8 +31,7 @@ class NumverifyApiResponseExceptionTest extends TestCase
     public function testGetMessage(): void
     {
         $expectedMessage               = 'Test message';
-        $phoneNumberData               = new stdClass();
-        $numverifyApiResponseException = new NumverifyApiResponseException($expectedMessage, $phoneNumberData);
+        $numverifyApiResponseException = new NumverifyApiResponseException($expectedMessage,);
 
         $message = $numverifyApiResponseException->getMessage();
         self::assertSame($expectedMessage, $message);

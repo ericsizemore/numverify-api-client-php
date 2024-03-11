@@ -239,7 +239,7 @@ class ValidPhoneNumber implements PhoneNumberInterface, JsonSerializable, String
             throw new NumverifyApiResponseException(sprintf(
                 "API response does not contain one or more expected fields: %s",
                 implode(', ', $missingFields)
-            ), $phoneNumberData);
+            ));
         }
     }
 }

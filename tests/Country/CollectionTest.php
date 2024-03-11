@@ -94,9 +94,13 @@ class CollectionTest extends TestCase
     public function testCount(array $countries, int $expectedCount): void
     {
         $collection = new Collection(...$countries);
+        self::assertSame($expectedCount, $collection->count());
         self::assertCount($expectedCount, $collection);
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public static function dataProviderForCountryCounts(): Iterator
     {
         yield 'zero' => [
@@ -159,6 +163,7 @@ class CollectionTest extends TestCase
         $expectedCountries = ['US' => false, 'GB' => false, 'JP' => false];
 
         foreach ($collection as $countryCode => $country) {
+            /** @var string $countryCode */
             $expectedCountries[$countryCode] = true;
             self::assertInstanceOf(Country::class, $country); // @phpstan-ignore-line
         }
@@ -182,6 +187,7 @@ class CollectionTest extends TestCase
 
     /**
      * @testCase Iteration failure if manually manipulating the iterator (no elements).
+     * @psalm-suppress NoValue
      */
     public function testIterationCurrentFailureNoElements(): void
     {

@@ -111,6 +111,9 @@ class ApiTest extends TestCase
         self::assertInstanceOf(ClientInterface::class, $reflectionProperty->getValue($api));
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public static function dataProviderForHttp(): Iterator
     {
         yield [true];

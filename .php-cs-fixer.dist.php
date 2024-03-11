@@ -6,7 +6,7 @@ $header = <<<'EOF'
     This file is part of the Numverify API Client for PHP.
 
     (c) 2024 Eric Sizemore <admin@secondversion.com>
-    (c) 2018-2021 Mark Rogoyski
+    (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
 
     @license The MIT License
 

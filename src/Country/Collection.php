@@ -70,6 +70,8 @@ class Collection implements Iterator, Countable, JsonSerializable
 
     /**
      * @inheritDoc
+     *
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function count(): int
     {

@@ -46,10 +46,9 @@ class InvalidPhoneNumberTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->validatedPhoneNumberData = (object) [
-            'valid'  => self::VALID,
-            'number' => self::NUMBER,
-        ];
+        $this->validatedPhoneNumberData = new stdClass();
+        $this->validatedPhoneNumberData->valid = self::VALID;
+        $this->validatedPhoneNumberData->number = self::NUMBER;
     }
 
     /**
@@ -126,6 +125,9 @@ class InvalidPhoneNumberTest extends TestCase
         new InvalidPhoneNumber($this->validatedPhoneNumberData);
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public static function dataProviderForFields(): Iterator
     {
         yield ['valid'];

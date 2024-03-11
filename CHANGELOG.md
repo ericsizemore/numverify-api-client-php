@@ -6,6 +6,21 @@ you can use the following url: https://github.com/ericsizemore/api/compare/v3.0.
 
 Simply replace the version numbers depending on which set of changes you wish to see.
 
+### 3.0.1 (Not released, in progress)
+
+#### Changed
+
+  * Updates throughout to fix psalm-reported issues.
+
+#### Added
+
+  * `vimeo/psalm` added into dev-dependencies and workflow
+
+#### Removed
+
+  * Removed the unused `$phoneNumberData` param/property from `Numverify\Exception\NumverifyApiResponseException`
+
+
 ### 3.0.0 (2024-03-10)
 
 Forked from [`markrogoyski/numverify-api-client-php`](https://github.com/markrogoyski/numverify-api-client-php) v2.2.0.

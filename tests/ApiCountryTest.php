@@ -78,7 +78,9 @@ class ApiCountryTest extends TestCase
         $countryCollection = $this->aClient(useHttps: $useHttps)->getCountries();
 
         foreach ($countryCollection as $countryCode => $country) {
+            /** @var string $countryCode */
             $expectedCountries[$countryCode] = true;
+            self::assertInstanceOf(Country::class, $country); // @phpstan-ignore-line
         }
 
         foreach ($expectedCountries as $expectedCountry) {
@@ -140,6 +142,9 @@ class ApiCountryTest extends TestCase
         $stub->getCountries();
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public static function dataProviderForHttp(): Iterator
     {
         yield [true];

@@ -24,7 +24,7 @@ use stdClass;
  */
 class NumverifyApiResponseException extends RuntimeException
 {
-    public function __construct(string $message, private readonly ?stdClass $phoneNumberData = null) // @phpstan-ignore-line
+    public function __construct(string $message)
     {
         parent::__construct($message);
     }

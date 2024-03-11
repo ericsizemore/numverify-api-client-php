@@ -194,6 +194,9 @@ class ApiPhoneNumberTest extends TestCase
         $apiStub->validatePhoneNumber($phoneNumberToValidate);
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public static function dataProviderForHttp(): Iterator
     {
         yield [true];

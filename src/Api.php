@@ -52,8 +52,9 @@ use function trim;
  * Main API class.
  *
  * @see \Numverify\Tests\ApiTest
- *
+ * @psalm-api
  * @phpstan-type ApiJsonArray array{success?: bool, error?: array{code?: int, type?: string, info?: string}, valid?: bool, number?: string, local_format?: string, international_format?: string, country_prefix?: string, country_code?: string, country_name?: string, location?: string, carrier?: string, line_type?: string}
+ * @phpstan-type ApiCountryJsonArray array<string, array{country_name: string, dialling_code: string}>
  */
 class Api
 {
@@ -179,12 +180,13 @@ class Api
             throw new NumverifyApiFailureException($serverException->getResponse());
         }
 
-        /** @var ApiJsonArray $body */
+        /** @var ApiCountryJsonArray $body */
         $body = $this->validateAndDecodeResponse($response, true);
 
         $countries = array_map(
-            // @phpstan-ignore-next-line
-            static fn (array $country, string $countryCode): Country => new Country($countryCode, $country['country_name'], $country['dialling_code']),
+            static function (array $country, string $countryCode): Country {
+                return new Country($countryCode, $country['country_name'], $country['dialling_code']);
+            },
             $body,
             array_keys($body)
         );
@@ -208,7 +210,7 @@ class Api
      * @param ResponseInterface $response
      * @param bool              $asArray  If true, returns the decoded jSON as an assoc. array, stdClass otherwise.
      *
-     * @return stdClass | ApiJsonArray
+     * @return stdClass | ApiJsonArray | ApiCountryJsonArray
      *
      * @throws NumverifyApiFailureException if the response is non 200 or success field is false.
      */

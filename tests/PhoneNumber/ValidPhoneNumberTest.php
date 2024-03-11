@@ -62,18 +62,17 @@ class ValidPhoneNumberTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->validatedPhoneNumberData = (object) [
-            'valid'                => self::VALID,
-            'number'               => self::NUMBER,
-            'local_format'         => self::LOCAL_FORMAT,
-            'international_format' => self::INTERNATIONAL_FORMAT,
-            'country_prefix'       => self::COUNTRY_PREFIX,
-            'country_code'         => self::COUNTRY_CODE,
-            'country_name'         => self::COUNTRY_NAME,
-            'location'             => self::LOCATION,
-            'carrier'              => self::CARRIER,
-            'line_type'            => self::LINE_TYPE,
-        ];
+        $this->validatedPhoneNumberData = new stdClass();
+        $this->validatedPhoneNumberData->valid                = self::VALID;
+        $this->validatedPhoneNumberData->number               = self::NUMBER;
+        $this->validatedPhoneNumberData->local_format         = self::LOCAL_FORMAT;
+        $this->validatedPhoneNumberData->international_format = self::INTERNATIONAL_FORMAT;
+        $this->validatedPhoneNumberData->country_prefix       = self::COUNTRY_PREFIX;
+        $this->validatedPhoneNumberData->country_code         = self::COUNTRY_CODE;
+        $this->validatedPhoneNumberData->country_name         = self::COUNTRY_NAME;
+        $this->validatedPhoneNumberData->location             = self::LOCATION;
+        $this->validatedPhoneNumberData->carrier              = self::CARRIER;
+        $this->validatedPhoneNumberData->line_type            = self::LINE_TYPE;
     }
 
     /**
@@ -183,6 +182,9 @@ class ValidPhoneNumberTest extends TestCase
         new ValidPhoneNumber($this->validatedPhoneNumberData);
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public static function dataProviderForFields(): Iterator
     {
         yield ['valid'];
