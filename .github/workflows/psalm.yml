@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Psalm
-        uses: docker://ghcr.io/psalm/psalm-github-actions:5.23.0
+        uses: docker://vimeo/psalm-github-actions:latest
         with:
           args: --shepherd
           security_analysis: true
