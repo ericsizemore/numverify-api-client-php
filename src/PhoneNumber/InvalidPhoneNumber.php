@@ -46,7 +46,7 @@ class InvalidPhoneNumber implements PhoneNumberInterface, JsonSerializable, Stri
         $this->verifyPhoneNumberData($validatedPhoneNumber);
 
         $this->valid  = (bool) $validatedPhoneNumber->valid;
-        $this->number = $validatedPhoneNumber->number;
+        $this->number = (string) $validatedPhoneNumber->number;
     }
 
     public function isValid(): bool

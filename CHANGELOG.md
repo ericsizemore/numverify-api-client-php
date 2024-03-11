@@ -11,6 +11,7 @@ Simply replace the version numbers depending on which set of changes you wish to
 #### Changed
 
   * Updates throughout to fix psalm-reported issues.
+    * Initially level 2, now should be valid on Psalm level 1.
 
 #### Added
 

@@ -8,8 +8,8 @@ Numverify phone number validation and country API client library for PHP.
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ericsizemore/numverify-api-client-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ericsizemore/numverify-api-client-php/?branch=master)
 [![Tests](https://github.com/ericsizemore/numverify-api-client-php/actions/workflows/tests.yml/badge.svg)](https://github.com/ericsizemore/numverify-api-client-php/actions/workflows/tests.yml)
 [![PHPStan](https://github.com/ericsizemore/numverify-api-client-php/actions/workflows/analysis.yml/badge.svg)](https://github.com/ericsizemore/numverify-api-client-php/actions/workflows/analysis.yml)
-
 [![Psalm Static analysis](https://github.com/ericsizemore/numverify-api-client-php/actions/workflows/psalm.yml/badge.svg?branch=master)](https://github.com/ericsizemore/numverify-api-client-php/actions/workflows/psalm.yml)
+
 [![Type Coverage](https://shepherd.dev/github/ericsizemore/numverify-api-client-php/coverage.svg)](https://shepherd.dev/github/ericsizemore/numverify-api-client-php)
 [![Psalm Level](https://shepherd.dev/github/ericsizemore/numverify-api-client-php/level.svg)](https://shepherd.dev/github/ericsizemore/numverify-api-client-php)
 [![Latest Stable Version](https://img.shields.io/packagist/v/esi/numverify-api-client-php.svg)](https://packagist.org/packages/esi/numverify-api-client-php)

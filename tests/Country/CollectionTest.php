@@ -143,15 +143,23 @@ class CollectionTest extends TestCase
         self::assertObjectHasProperty('US', $object);
         self::assertObjectHasProperty('GB', $object);
         self::assertObjectHasProperty('JP', $object);
-        self::assertSame('US', $object->US->countryCode);
-        self::assertSame('GB', $object->GB->countryCode);
-        self::assertSame('JP', $object->JP->countryCode);
-        self::assertSame('United States', $object->US->countryName);
-        self::assertSame('United Kingdom', $object->GB->countryName);
-        self::assertSame('Japan', $object->JP->countryName);
-        self::assertSame('+1', $object->US->diallingCode);
-        self::assertSame('+44', $object->GB->diallingCode);
-        self::assertSame('+81', $object->JP->diallingCode);
+
+        /** @var stdClass $countryUs */
+        $countryUs = $object->US;
+        /** @var stdClass $countryGb */
+        $countryGb = $object->GB;
+        /** @var stdClass $countryJp */
+        $countryJp = $object->JP;
+
+        self::assertSame('US', (string) $countryUs->countryCode);
+        self::assertSame('GB', (string) $countryGb->countryCode);
+        self::assertSame('JP', (string) $countryJp->countryCode);
+        self::assertSame('United States', (string) $countryUs->countryName);
+        self::assertSame('United Kingdom', (string) $countryGb->countryName);
+        self::assertSame('Japan', (string) $countryJp->countryName);
+        self::assertSame('+1', (string) $countryUs->diallingCode);
+        self::assertSame('+44', (string) $countryGb->diallingCode);
+        self::assertSame('+81', (string) $countryJp->diallingCode);
     }
 
     /**

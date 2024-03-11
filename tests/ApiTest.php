@@ -43,6 +43,7 @@ class ApiTest extends TestCase
 
     /**
      * @testCase Construction with default Guzzle client.
+     * @psalm-suppress DeprecatedMethod
      */
     #[DataProvider('dataProviderForHttp')]
     public function testConstructionWithDefaultClient(bool $useHttps): void
@@ -54,8 +55,13 @@ class ApiTest extends TestCase
         $reflectionProperty = $reflectionClass->getProperty('client');
         self::assertInstanceOf(ClientInterface::class, $reflectionProperty->getValue($api));
 
+        /** @var Client $client */
+        $client = $reflectionProperty->getValue($api);
+
+        $client = self::parseGuzzleConfig($client);
+
         $expected = ($useHttps ? 'https' : 'http') . '://apilayer.net/api';
-        $actual   = (string) $reflectionProperty->getValue($api)->getConfig('base_uri'); // @phpstan-ignore-line
+        $actual   = (string) $client['base_uri']; // @phpstan-ignore-line
         self::assertSame($expected, $actual);
     }
 
@@ -72,8 +78,13 @@ class ApiTest extends TestCase
         $reflectionProperty = $reflectionClass->getProperty('client');
         self::assertInstanceOf(ClientInterface::class, $reflectionProperty->getValue($api));
 
+        /** @var Client $client */
+        $client = $reflectionProperty->getValue($api);
+
+        $client = self::parseGuzzleConfig($client);
+
         $expected = 'http://apilayer.net/api';
-        $actual   = (string) $reflectionProperty->getValue($api)->getConfig('base_uri'); // @phpstan-ignore-line
+        $actual   = (string) $client['base_uri']; // @phpstan-ignore-line
         self::assertSame($expected, $actual);
     }
 
@@ -90,10 +101,28 @@ class ApiTest extends TestCase
         $reflectionProperty = $reflectionClass->getProperty('client');
         self::assertInstanceOf(ClientInterface::class, $reflectionProperty->getValue($api));
 
+        /** @var Client $client */
+        $client = $reflectionProperty->getValue($api);
+
+        $client = self::parseGuzzleConfig($client);
+
         $expected = ($useHttps ? 'https' : 'http') . '://apilayer.net/api';
-        $actual   = (string) $reflectionProperty->getValue($api)->getConfig('base_uri'); // @phpstan-ignore-line
+        $actual   = (string) $client['base_uri']; // @phpstan-ignore-line
         self::assertSame($expected, $actual);
-        self::assertSame(10, $reflectionProperty->getValue($api)->getConfig('timeout'));
+        self::assertSame(10, $client['timeout']);
+    }
+
+    /**
+     * @return array<array-key, mixed>
+     */
+    private static function parseGuzzleConfig(Client $client): array
+    {
+        $client = (array) $client;
+
+        /** @var array<array-key, mixed> $config */
+        $config = \array_shift($client);
+
+        return $config;
     }
 
     /**

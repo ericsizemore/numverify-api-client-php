@@ -83,6 +83,9 @@ class NumverifyApiFailureException extends RuntimeException
             return sprintf('Unknown error - %d %s', $this->statusCode, $this->getReasonPhrase());
         }
 
-        return sprintf('Type:%s Code:%d Info:%s', $body->error->type, $body->error->code, $body->error->info);
+        /** @var stdClass $error */
+        $error = $body->error;
+
+        return sprintf('Type:%s Code:%d Info:%s', (string) $error->type, (int) $error->code, (string) $error->info);
     }
 }
