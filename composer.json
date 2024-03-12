@@ -73,6 +73,7 @@
         "phpcs-dry": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff",
         "phpcs-fix": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php",
         "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon",
+        "psalm": "vendor/bin/psalm -c psalm.xml",
         "test": "phpunit"
     }
 }

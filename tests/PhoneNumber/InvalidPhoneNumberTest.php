@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of the Numverify API Client for PHP.
  *
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
- * (c) 2018-2021 Mark Rogoyski
+ * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
  * @license The MIT License
  *
@@ -46,8 +46,8 @@ class InvalidPhoneNumberTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->validatedPhoneNumberData = new stdClass();
-        $this->validatedPhoneNumberData->valid = self::VALID;
+        $this->validatedPhoneNumberData         = new stdClass();
+        $this->validatedPhoneNumberData->valid  = self::VALID;
         $this->validatedPhoneNumberData->number = self::NUMBER;
     }
 

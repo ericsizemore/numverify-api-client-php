@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of the Numverify API Client for PHP.
  *
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
- * (c) 2018-2021 Mark Rogoyski
+ * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
  * @license The MIT License
  *
@@ -16,10 +16,8 @@ declare(strict_types=1);
 
 namespace Numverify\PhoneNumber;
 
-use JsonSerializable;
 use Numverify\Exception\NumverifyApiResponseException;
 use stdClass;
-use Stringable;
 
 use function implode;
 use function sprintf;
@@ -30,7 +28,7 @@ use function sprintf;
  *
  * @see \Numverify\Tests\PhoneNumber\ValidPhoneNumberTest
  */
-class ValidPhoneNumber implements PhoneNumberInterface, JsonSerializable, Stringable
+class ValidPhoneNumber implements PhoneNumberInterface
 {
     private readonly bool $valid;
 
@@ -80,7 +78,7 @@ class ValidPhoneNumber implements PhoneNumberInterface, JsonSerializable, String
     }
 
     /**
-     * Is the phone number valid?
+     * @inheritDoc
      */
     public function isValid(): bool
     {
@@ -88,7 +86,7 @@ class ValidPhoneNumber implements PhoneNumberInterface, JsonSerializable, String
     }
 
     /**
-     * Get phone number.
+     * @inheritDoc
      */
     public function getNumber(): string
     {

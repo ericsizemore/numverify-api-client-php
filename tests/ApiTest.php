@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of the Numverify API Client for PHP.
  *
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
- * (c) 2018-2021 Mark Rogoyski
+ * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
  * @license The MIT License
  *
@@ -33,6 +33,8 @@ use function sys_get_temp_dir;
 
 use const DIRECTORY_SEPARATOR;
 
+use function array_shift;
+
 /**
  * @internal
  */
@@ -43,6 +45,7 @@ class ApiTest extends TestCase
 
     /**
      * @testCase Construction with default Guzzle client.
+     *
      * @psalm-suppress DeprecatedMethod
      */
     #[DataProvider('dataProviderForHttp')]
@@ -120,7 +123,7 @@ class ApiTest extends TestCase
         $client = (array) $client;
 
         /** @var array<array-key, mixed> $config */
-        $config = \array_shift($client);
+        $config = array_shift($client);
 
         return $config;
     }

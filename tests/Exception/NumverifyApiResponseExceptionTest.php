@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of the Numverify API Client for PHP.
  *
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
- * (c) 2018-2021 Mark Rogoyski
+ * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
  * @license The MIT License
  *
@@ -31,7 +31,7 @@ class NumverifyApiResponseExceptionTest extends TestCase
     public function testGetMessage(): void
     {
         $expectedMessage               = 'Test message';
-        $numverifyApiResponseException = new NumverifyApiResponseException($expectedMessage,);
+        $numverifyApiResponseException = new NumverifyApiResponseException($expectedMessage);
 
         $message = $numverifyApiResponseException->getMessage();
         self::assertSame($expectedMessage, $message);

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of the Numverify API Client for PHP.
  *
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
- * (c) 2018-2021 Mark Rogoyski
+ * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
  * @license The MIT License
  *
@@ -195,6 +195,7 @@ class CollectionTest extends TestCase
 
     /**
      * @testCase Iteration failure if manually manipulating the iterator (no elements).
+     *
      * @psalm-suppress NoValue
      */
     public function testIterationCurrentFailureNoElements(): void

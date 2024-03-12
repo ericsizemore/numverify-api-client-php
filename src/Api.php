@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of the Numverify API Client for PHP.
  *
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
- * (c) 2018-2021 Mark Rogoyski
+ * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
  * @license The MIT License
  *
@@ -52,7 +52,9 @@ use function trim;
  * Main API class.
  *
  * @see \Numverify\Tests\ApiTest
+ *
  * @psalm-api
+ *
  * @phpstan-type ApiJsonArray array{success?: bool, error?: array{code?: int, type?: string, info?: string}, valid?: bool, number?: string, local_format?: string, international_format?: string, country_prefix?: string, country_code?: string, country_name?: string, location?: string, carrier?: string, line_type?: string}
  * @phpstan-type ApiCountryJsonArray array<string, array{country_name: string, dialling_code: string}>
  */
@@ -80,7 +82,7 @@ class Api
     /**
      * Api constructor.
      *
-     * Requires an access (or api) key. You can get one from Numverify:
+     * Requires an access key. You can get one from Numverify:
      *
      * @see https://numverify.com/product
      *
@@ -98,7 +100,7 @@ class Api
         ?ClientInterface $client = null,
         array $options = []
     ) {
-        // If we already have a client
+        // If we already have a client.
         if ($client instanceof ClientInterface) {
             $this->client = $client;
 
@@ -106,13 +108,13 @@ class Api
         }
 
         // Build client
-        $clientOptions = ['base_uri' => $this->getUrl($useHttps)];
+        $clientOptions = ['base_uri' => self::getUrl($useHttps)];
 
         // If $options has 'cachePath' key, and it is a valid directory, then buildCacheHandler() will
         // add Cache to the Guzzle handler stack.
-        $options = $this->buildCacheHandler($options);
+        $options = self::buildCacheHandler($options);
 
-        // Merge $options into main client options
+        // Merge $options into main client options.
         $clientOptions = array_merge($clientOptions, $options);
 
         $this->client = new Client($clientOptions);
@@ -154,7 +156,7 @@ class Api
         }
 
         /** @var stdClass $body */
-        $body = $this->validateAndDecodeResponse($result);
+        $body = self::validateAndDecodeResponse($result);
 
         return Factory::create($body);
     }
@@ -181,12 +183,10 @@ class Api
         }
 
         /** @var ApiCountryJsonArray $body */
-        $body = $this->validateAndDecodeResponse($response, true);
+        $body = self::validateAndDecodeResponse($response, true);
 
         $countries = array_map(
-            static function (array $country, string $countryCode): Country {
-                return new Country($countryCode, $country['country_name'], $country['dialling_code']);
-            },
+            static fn (array $country, string $countryCode): Country => new Country($countryCode, $country['country_name'], $country['dialling_code']),
             $body,
             array_keys($body)
         );
@@ -197,7 +197,7 @@ class Api
     /**
      * Get the URL to use for API calls.
      */
-    private function getUrl(bool $useHttps): string
+    private static function getUrl(bool $useHttps): string
     {
         return $useHttps ? self::HTTPS_URL : self::HTTP_URL;
     }
@@ -212,9 +212,9 @@ class Api
      *
      * @return stdClass | ApiJsonArray | ApiCountryJsonArray
      *
-     * @throws NumverifyApiFailureException if the response is non 200 or success field is false.
+     * @throws NumverifyApiFailureException If the response is non 200 or success field is false.
      */
-    private function validateAndDecodeResponse(ResponseInterface $response, bool $asArray = false): stdClass | array
+    private static function validateAndDecodeResponse(ResponseInterface $response, bool $asArray = false): stdClass | array
     {
         // If not 200 ok
         if ($response->getStatusCode() !== 200) {
@@ -257,7 +257,7 @@ class Api
      *
      * @return array<string, mixed>
      */
-    private function buildCacheHandler(array $options): array
+    private static function buildCacheHandler(array $options): array
     {
         /** @var string|null $cachePath */
         $cachePath = $options['cachePath'] ?? null;

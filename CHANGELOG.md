@@ -12,6 +12,11 @@ Simply replace the version numbers depending on which set of changes you wish to
 
   * Updates throughout to fix psalm-reported issues.
     * Initially level 2, now should be valid on Psalm level 1.
+  * Changed the following private methods of the `Api` class to static methods:
+    * `buildCacheHandler`
+    * `validateAndDecodeResponse`
+    * `getUrl`
+  * Modifed `Numverify\PhoneNumber\PhoneNumberInterface` to extend `JsonSerializable`, `Stringable`
 
 #### Added
 
@@ -19,8 +24,7 @@ Simply replace the version numbers depending on which set of changes you wish to
 
 #### Removed
 
-  * Removed the unused `$phoneNumberData` param/property from `Numverify\Exception\NumverifyApiResponseException`
-
+  * Removed unnecessary constructor and properties from `Numverify\Exception\NumverifyApiResponseException`
 
 ### 3.0.0 (2024-03-10)
 
