@@ -61,7 +61,7 @@ $config
             ],
         ],
         'heredoc_to_nowdoc'       => true,
-        'ordered_imports'         => false,
+        'ordered_imports'         => ['imports_order' => ['class', 'function', 'const',]],
         'declare_equal_normalize' => ['space' => 'none'],
         'declare_parentheses'     => true,
         'declare_strict_types'    => true,

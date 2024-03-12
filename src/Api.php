@@ -19,8 +19,8 @@ namespace Numverify;
 use GuzzleHttp\{
     Client,
     ClientInterface,
-    Exception\ServerException,
     Exception\GuzzleException,
+    Exception\ServerException,
     HandlerStack
 };
 use Kevinrob\GuzzleCache\{
@@ -29,16 +29,16 @@ use Kevinrob\GuzzleCache\{
     Strategy\PrivateCacheStrategy
 };
 use Numverify\{
-    Country\Country,
     Country\Collection,
+    Country\Country,
     Exception\NumverifyApiFailureException,
     PhoneNumber\Factory,
     PhoneNumber\PhoneNumberInterface
 };
 use Psr\Http\Message\ResponseInterface;
 use SensitiveParameter;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use stdClass;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 use function array_keys;
 use function array_map;
@@ -207,8 +207,7 @@ class Api
      *
      * If everything looks good, it returns the decoded jSON data based on $asArray.
      *
-     * @param ResponseInterface $response
-     * @param bool              $asArray  If true, returns the decoded jSON as an assoc. array, stdClass otherwise.
+     * @param bool $asArray If true, returns the decoded jSON as an assoc. array, stdClass otherwise.
      *
      * @return stdClass | ApiJsonArray | ApiCountryJsonArray
      *

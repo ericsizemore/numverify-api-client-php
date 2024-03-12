@@ -16,9 +16,10 @@ declare(strict_types=1);
 
 namespace Numverify\Tests\Exception;
 
-use PHPUnit\Framework\TestCase;
-use Numverify\Exception\NumverifyApiFailureException;
 use GuzzleHttp\Psr7\Response;
+use Numverify\Exception\NumverifyApiFailureException;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
@@ -38,9 +39,7 @@ class NumverifyApiFailureExceptionTest extends TestCase
         $this->response = new Response(self::STATUS_CODE, body: self::BODY, reason: self::REASON_PHRASE);
     }
 
-    /**
-     * @testCase getStatusCode
-     */
+    #[TestDox('NumverifyApiFailureException can return status code.')]
     public function testGetStatusCode(): void
     {
         $numverifyApiFailureException = new NumverifyApiFailureException($this->response);
@@ -49,9 +48,7 @@ class NumverifyApiFailureExceptionTest extends TestCase
         self::assertSame(self::STATUS_CODE, $statusCode);
     }
 
-    /**
-     * @testCase getReasonPhrase
-     */
+    #[TestDox('NumverifyApiFailureException can return reason phrase.')]
     public function testGetReasonPhrase(): void
     {
         $numverifyApiFailureException = new NumverifyApiFailureException($this->response);
@@ -60,9 +57,7 @@ class NumverifyApiFailureExceptionTest extends TestCase
         self::assertSame(self::REASON_PHRASE, $reasonPhrase);
     }
 
-    /**
-     * @testCase getBody
-     */
+    #[TestDox('NumverifyApiFailureException can return body.')]
     public function testGetBody(): void
     {
         $numverifyApiFailureException = new NumverifyApiFailureException($this->response);

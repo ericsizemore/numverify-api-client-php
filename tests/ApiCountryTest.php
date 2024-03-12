@@ -18,22 +18,23 @@ namespace Numverify\Tests;
 
 use GuzzleHttp\{
     ClientInterface,
-    Handler\MockHandler,
     HandlerStack,
+    Handler\MockHandler,
     Psr7\Response
 };
 use Iterator;
-use PHPUnit\Framework\{
-    Attributes\CoversClass,
-    Attributes\DataProvider,
-    TestCase,
-    MockObject\MockObject
-};
 use Numverify\{
     Api,
     Country\Collection,
     Country\Country,
     Exception\NumverifyApiFailureException
+};
+use PHPUnit\Framework\{
+    Attributes\CoversClass,
+    Attributes\DataProvider,
+    Attributes\TestDox,
+    MockObject\MockObject,
+    TestCase
 };
 
 /**
@@ -47,20 +48,16 @@ class ApiCountryTest extends TestCase
 {
     private const ACCESS_KEY = 'SomeAccessKey';
 
-    /**
-     * @testCase getCountries success.
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('getCountries returns the correct count, with $useHttps.')]
     public function testCountriesApiReturnsNumberOfCountries(bool $useHttps): void
     {
         $countryCollection = $this->aClient(useHttps: $useHttps)->getCountries();
         self::assertCount(3, $countryCollection);
     }
 
-    /**
-     * @testCase     getCountries success
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('getCountries returns a Collection containing Country instances, with $useHttps.')]
     public function testCountriesReturnsCollectionOfCountries(bool $useHttps): void
     {
         $countryCollection = $this->aClient(useHttps: $useHttps)->getCountries();
@@ -68,10 +65,8 @@ class ApiCountryTest extends TestCase
         self::assertContainsOnlyInstancesOf(Country::class, $countryCollection);
     }
 
-    /**
-     * @testCase getCountries success.
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('getCountries returns expected country information with $useHttps.')]
     public function testCountriesReturnsExpectedCountries(bool $useHttps): void
     {
         $expectedCountries = ['JP' => false, 'GB' => false, 'US' => false];
@@ -88,10 +83,8 @@ class ApiCountryTest extends TestCase
         }
     }
 
-    /**
-     * @testCase getCountries exception - invalid access key.
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('Given an invalid api access key, getCountries returns expected error information with $useHttps.')]
     public function testCountriesInvalidAccessKey(bool $useHttps): void
     {
         $mockHandler = new MockHandler([
@@ -112,11 +105,9 @@ class ApiCountryTest extends TestCase
         $stub->getCountries();
     }
 
-    /**
-     * @testCase getCountries exception - API server error.
-     */
     #[DataProvider('dataProviderForHttp')]
-    public function testValidatePhoneNumberServerError(bool $useHttps): void
+    #[TestDox('Given a 500 server error response, getCountries returns appropriate exception with $useHttps.')]
+    public function testCountriesServerError(bool $useHttps): void
     {
         $mockHandler = new MockHandler([
             new Response(500),
@@ -127,11 +118,9 @@ class ApiCountryTest extends TestCase
         $stub->getCountries();
     }
 
-    /**
-     * @testCase     getCountries exception - API bad response
-     */
     #[DataProvider('dataProviderForHttp')]
-    public function testValidatePhoneNumberBadResponse(bool $useHttps): void
+    #[TestDox('Given a non-200 response, getCountries returns appropriate exception with $useHttps.')]
+    public function testCountriesBadResponse(bool $useHttps): void
     {
         $mockHandler = new MockHandler([
             new Response(202),
@@ -152,7 +141,7 @@ class ApiCountryTest extends TestCase
     }
 
     /**
-     * Given a client.
+     * Creates a mock client for testing.
      */
     private function aClient(
         string $accessKey = self::ACCESS_KEY,

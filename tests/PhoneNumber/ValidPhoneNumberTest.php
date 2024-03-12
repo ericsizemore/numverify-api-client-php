@@ -22,8 +22,9 @@ use Numverify\{
     PhoneNumber\ValidPhoneNumber
 };
 use PHPUnit\Framework\{
-    Attributes\DataProvider,
     Attributes\CoversClass,
+    Attributes\DataProvider,
+    Attributes\TestDox,
     TestCase
 };
 use stdClass;
@@ -75,9 +76,7 @@ class ValidPhoneNumberTest extends TestCase
         $this->validatedPhoneNumberData->line_type            = self::LINE_TYPE;
     }
 
-    /**
-     * @testCase isValid
-     */
+    #[TestDox('ValidPhoneNumber returns true on isValid.')]
     public function testIsValid(): void
     {
         $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
@@ -86,9 +85,7 @@ class ValidPhoneNumberTest extends TestCase
         self::assertTrue($isValid);
     }
 
-    /**
-     * @testCase getters.
-     */
+    #[TestDox('ValidPhoneNumber \'getters\' returns appropriate data.')]
     public function testGetters(): void
     {
         $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
@@ -114,9 +111,7 @@ class ValidPhoneNumberTest extends TestCase
         self::assertSame(self::LINE_TYPE, $lineType);
     }
 
-    /**
-     * @testCase String representation.
-     */
+    #[TestDox('ValidPhoneNumber uses Stringable interface to return proper string representation of number data.')]
     public function testToString(): void
     {
         $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
@@ -125,9 +120,7 @@ class ValidPhoneNumberTest extends TestCase
         self::assertSame(self::NUMBER, $stringRepresentation);
     }
 
-    /**
-     * @testCase JsonSerializable interface.
-     */
+    #[TestDox('ValidPhoneNumber uses JsonSerializable interface to return number data as array.')]
     public function testJsonSerialize(): void
     {
         $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
@@ -149,9 +142,7 @@ class ValidPhoneNumberTest extends TestCase
         self::assertSame(self::LINE_TYPE, $object->lineType);
     }
 
-    /**
-     * @testCase Debug info.
-     */
+    #[TestDox('ValidPhoneNumber sets __debugInfo for var_dump to return number data as array.')]
     public function testDebugInfo(): void
     {
         $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
@@ -170,10 +161,8 @@ class ValidPhoneNumberTest extends TestCase
         self::assertStringContainsString('lineType', $debugInfo);
     }
 
-    /**
-     * @testCase Missing constructor data exception.
-     */
     #[DataProvider('dataProviderForFields')]
+    #[TestDox('ValidPhoneNumber throws a NumverifyApiResponseException exception if missing data. Using field: $missingField')]
     public function testPhoneNumberDataValidation(string $missingField): void
     {
         unset($this->validatedPhoneNumberData->$missingField);

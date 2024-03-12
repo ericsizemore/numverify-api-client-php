@@ -16,18 +16,19 @@ declare(strict_types=1);
 
 namespace Numverify\Tests\Country;
 
+use Iterator;
+use LogicException;
 use Numverify\Country\{
-    Country,
-    Collection
+    Collection,
+    Country
 };
 use PHPUnit\Framework\{
     Attributes\CoversClass,
     Attributes\DataProvider,
+    Attributes\TestDox,
     Attributes\UsesClass,
     TestCase
 };
-use LogicException;
-use Iterator;
 use stdClass;
 
 /**
@@ -53,9 +54,7 @@ class CollectionTest extends TestCase
         $this->countryJp = new Country('JP', 'Japan', '+81');
     }
 
-    /**
-     * @testCase findByCountryCode
-     */
+    #[TestDox('Collection is able to find countries by country code.')]
     public function testFindByCountryCode(): void
     {
         $collection = new Collection(...[$this->countryUs, $this->countryGb, $this->countryJp]);
@@ -69,9 +68,7 @@ class CollectionTest extends TestCase
         self::assertSame($this->countryJp, $countryJp);
     }
 
-    /**
-     * @testCase findByCountryName
-     */
+    #[TestDox('Collection is able to find countries by country name.')]
     public function testFindByCountryName(): void
     {
         $collection = new Collection(...[$this->countryUs, $this->countryGb, $this->countryJp]);
@@ -86,11 +83,10 @@ class CollectionTest extends TestCase
     }
 
     /**
-     * @testCase Countable interface.
-     *
      * @param Country[] $countries
      */
     #[DataProvider('dataProviderForCountryCounts')]
+    #[TestDox('Collection uses the Countable interface to implement count. Using $countries results in $expectedCount.')]
     public function testCount(array $countries, int $expectedCount): void
     {
         $collection = new Collection(...$countries);
@@ -98,39 +94,7 @@ class CollectionTest extends TestCase
         self::assertCount($expectedCount, $collection);
     }
 
-    /**
-     * @psalm-suppress PossiblyUnusedMethod
-     */
-    public static function dataProviderForCountryCounts(): Iterator
-    {
-        yield 'zero' => [
-            [],
-            0,
-        ];
-        yield 'one' => [
-            [new Country('US', 'United States', '+1')],
-            1,
-        ];
-        yield 'two' => [
-            [
-                new Country('US', 'United States', '+1'),
-                new Country('GB', 'United Kingdom', '+44'),
-            ],
-            2,
-        ];
-        yield 'three' => [
-            [
-                new Country('US', 'United States', '+1'),
-                new Country('GB', 'United Kingdom', '+44'),
-                new Country('JP', 'Japan', '+81'),
-            ],
-            3,
-        ];
-    }
-
-    /**
-     * @testCase JsonSerialize interface.
-     */
+    #[TestDox('Collection uses the JsonSerialize interface to return country information as an array.')]
     public function testJsonSerialize(): void
     {
         $collection = new Collection(...[$this->countryUs, $this->countryGb, $this->countryJp]);
@@ -162,9 +126,7 @@ class CollectionTest extends TestCase
         self::assertSame('+81', (string) $countryJp->diallingCode);
     }
 
-    /**
-     * @testCase Iterator interface.
-     */
+    #[TestDox('Collection can be iterated due to implementing the Iterator interface.')]
     public function testIterator(): void
     {
         $collection        = new Collection(...[$this->countryUs, $this->countryGb, $this->countryJp]);
@@ -181,9 +143,7 @@ class CollectionTest extends TestCase
         }
     }
 
-    /**
-     * @testCase Iteration failure if manually manipulating the iterator (with elements).
-     */
+    #[TestDox('Collection iteration failure if manually manipulating the iterator (with elements).')]
     public function testIterationCurrentFailureWithElements(): void
     {
         $collection = new Collection(...[$this->countryUs]);
@@ -194,15 +154,44 @@ class CollectionTest extends TestCase
     }
 
     /**
-     * @testCase Iteration failure if manually manipulating the iterator (no elements).
-     *
      * @psalm-suppress NoValue
      */
+    #[TestDox('Collection iteration failure if manually manipulating the iterator (no elements).')]
     public function testIterationCurrentFailureNoElements(): void
     {
         $collection = new Collection(...[]);
 
         $this->expectException(LogicException::class);
         $collection->current();
+    }
+
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
+    public static function dataProviderForCountryCounts(): Iterator
+    {
+        yield 'zero' => [
+            [],
+            0,
+        ];
+        yield 'one' => [
+            [new Country('US', 'United States', '+1')],
+            1,
+        ];
+        yield 'two' => [
+            [
+                new Country('US', 'United States', '+1'),
+                new Country('GB', 'United Kingdom', '+44'),
+            ],
+            2,
+        ];
+        yield 'three' => [
+            [
+                new Country('US', 'United States', '+1'),
+                new Country('GB', 'United Kingdom', '+44'),
+                new Country('JP', 'Japan', '+81'),
+            ],
+            3,
+        ];
     }
 }

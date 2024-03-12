@@ -16,8 +16,9 @@ declare(strict_types=1);
 
 namespace Numverify\Tests\Country;
 
-use PHPUnit\Framework\TestCase;
 use Numverify\Country\Country;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
@@ -31,9 +32,7 @@ class CountryTest extends TestCase
 
     private const DIALLING_CODE = '+1';
 
-    /**
-     * @testCase getters.
-     */
+    #[TestDox('Country \'getters\' returns expected results.')]
     public function testGetters(): void
     {
         $country = new Country(self::COUNTRY_CODE, self::COUNTRY_NAME, self::DIALLING_CODE);
@@ -47,9 +46,7 @@ class CountryTest extends TestCase
         self::assertSame(self::DIALLING_CODE, $diallingCode);
     }
 
-    /**
-     * @testCase String representation.
-     */
+    #[TestDox('Country implements Stringable and returns correct string representation.')]
     public function testStringRepresentation(): void
     {
         $country = new Country(self::COUNTRY_CODE, self::COUNTRY_NAME, self::DIALLING_CODE);
@@ -58,9 +55,7 @@ class CountryTest extends TestCase
         self::assertSame('US: United States (+1)', $stringRepresentation);
     }
 
-    /**
-     * @testCase JsonSerialize interface.
-     */
+    #[TestDox('Country implements JsonSerialize and returns array of country information.')]
     public function testJsonSerializeInterface(): void
     {
         $country = new Country(self::COUNTRY_CODE, self::COUNTRY_NAME, self::DIALLING_CODE);

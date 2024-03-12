@@ -24,4 +24,7 @@
             <html outputDirectory="build/logs/coverage" />
         </report>
     </coverage>
+    <logging>
+        <testdoxHtml outputFile="build/logs/testdox.html"/>
+    </logging>
 </phpunit>

@@ -46,11 +46,11 @@
         "phpstan/phpstan-phpunit": "^1.4",
         "phpstan/phpstan-strict-rules": "^1.6",
         "phpunit/phpunit": "^11.0",
-        "vimeo/psalm": "dev-master",
-        "psalm/plugin-phpunit": "^0.18.4"
+        "psalm/plugin-phpunit": "^0.18.4",
+        "vimeo/psalm": "dev-master"
     },
     "replace": {
-        "markrogoyski/numverify-api-client-php": "~2.1"
+        "markrogoyski/numverify-api-client-php": "^2.1"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

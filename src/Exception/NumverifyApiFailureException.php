@@ -16,16 +16,18 @@ declare(strict_types=1);
 
 namespace Numverify\Exception;
 
-use RuntimeException;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
+
+use stdClass;
 
 use function json_decode;
 use function sprintf;
 
-use stdClass;
-
 /**
  * Thrown when the Numverify API returns a failure response.
+ *
+ * @see \Numverify\Tests\Exception\NumverifyApiFailureExceptionTest
  */
 class NumverifyApiFailureException extends RuntimeException
 {

@@ -18,17 +18,11 @@ namespace Numverify\Tests;
 
 use GuzzleHttp\{
     ClientInterface,
-    Handler\MockHandler,
     HandlerStack,
+    Handler\MockHandler,
     Psr7\Response
 };
 use Iterator;
-use PHPUnit\Framework\{
-    Attributes\CoversClass,
-    Attributes\DataProvider,
-    TestCase,
-    MockObject\MockObject
-};
 use Numverify\{
     Api,
     Exception\NumverifyApiFailureException,
@@ -36,6 +30,13 @@ use Numverify\{
     PhoneNumber\Factory,
     PhoneNumber\InvalidPhoneNumber,
     PhoneNumber\ValidPhoneNumber
+};
+use PHPUnit\Framework\{
+    Attributes\CoversClass,
+    Attributes\DataProvider,
+    Attributes\TestDox,
+    MockObject\MockObject,
+    TestCase
 };
 
 /**
@@ -51,6 +52,8 @@ class ApiPhoneNumberTest extends TestCase
     private const ACCESS_KEY = 'SomeAccessKey';
 
     /**
+     * Data to be used in MockResponse.
+     *
      * @var string[]
      */
     private const RESPONSES = [
@@ -60,29 +63,8 @@ class ApiPhoneNumberTest extends TestCase
         'missingField' => '{"valid": true, "number": "14158586273", "local_format": "4158586273", "international_format": "+14158586273", "country_prefix": "+1", "country_code": "US", "country_name": "United States of America", "location": "Novato", "line_type": "mobile"}',
     ];
 
-    /**
-     * Given a client.
-     */
-    private function aClient(
-        string $accessKey = self::ACCESS_KEY,
-        bool $useHttps = false,
-        ?ClientInterface $client = null,
-        ?MockHandler $mockHandler = null
-    ): Api&MockObject {
-        // Create a mock
-        $handlerStack = HandlerStack::create($mockHandler);
-
-        return $this
-            ->getMockBuilder(Api::class)
-            ->setConstructorArgs([$accessKey, $useHttps, $client, ['handler' => $handlerStack]])
-            ->onlyMethods([])
-            ->getMock();
-    }
-
-    /**
-     * @testCase validatePhoneNumber success - valid phone number.
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('Given a response with a valid result, validatePhoneNumber returns expected ValidPhoneNumber instance with $useHttps.')]
     public function testValidatePhoneNumberValidPhoneNumber(bool $useHttps): void
     {
         $mockHandler = new MockHandler([
@@ -95,10 +77,8 @@ class ApiPhoneNumberTest extends TestCase
         self::assertInstanceOf(ValidPhoneNumber::class, $phoneNumber);
     }
 
-    /**
-     * @testCase validatePhoneNumber success - valid phone number using local format and country code.
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('Given a response with a valid result, and using country code, validatePhoneNumber returns expected ValidPhoneNumber instance with $useHttps.')]
     public function testValidatePhoneNumberValidPhoneNumberUsingLocalFormatAndCountryCode(bool $useHttps): void
     {
         $mockHandler = new MockHandler([
@@ -112,10 +92,8 @@ class ApiPhoneNumberTest extends TestCase
         self::assertInstanceOf(ValidPhoneNumber::class, $phoneNumber);
     }
 
-    /**
-     * @testCase validatePhoneNumber success - invalid phone number.
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('Given a response with an invalid result, validatePhoneNumber returns expected InvalidPhoneNumber instance with $useHttps.')]
     public function testValidatePhoneNumberInvalidPhoneNumber(bool $useHttps): void
     {
         $mockHandler = new MockHandler([
@@ -128,10 +106,8 @@ class ApiPhoneNumberTest extends TestCase
         self::assertInstanceOf(InvalidPhoneNumber::class, $phoneNumber);
     }
 
-    /**
-     * @testCase validatePhoneNumber exception - invalid access key.
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('Given an invalid api access key, validatePhoneNumber returns expected error information with $useHttps.')]
     public function testValidatePhoneNumberInvalidAccessKey(bool $useHttps): void
     {
         $mockHandler = new MockHandler([
@@ -145,10 +121,8 @@ class ApiPhoneNumberTest extends TestCase
         $apiStub->validatePhoneNumber($phoneNumberToValidate);
     }
 
-    /**
-     * @testCase validatePhoneNumber exception - Server Error.
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('Given a 500 server error response, validatePhoneNumber returns appropriate exception with $useHttps.')]
     public function testValidatePhoneNumberServerError(bool $useHttps): void
     {
         $mockHandler = new MockHandler([
@@ -161,10 +135,8 @@ class ApiPhoneNumberTest extends TestCase
         $apiStub->validatePhoneNumber($phoneNumberToValidate);
     }
 
-    /**
-     * @testCase validatePhoneNumber exception - Bad response.
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('Given a non-200 response, validatePhoneNumber returns appropriate exception with $useHttps.')]
     public function testValidatePhoneNumberBadResponse(bool $useHttps): void
     {
         $mockHandler = new MockHandler([
@@ -177,10 +149,8 @@ class ApiPhoneNumberTest extends TestCase
         $apiStub->validatePhoneNumber($phoneNumberToValidate);
     }
 
-    /**
-     * @testCase validatePhoneNumber exception - API response missing expected field "carrier".
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('Given a response with missing \'carrier\' field, validatePhoneNumber returns appropriate exception with $useHttps.')]
     public function testValidatePhoneNumberApiResponseMissingData(bool $useHttps): void
     {
         $mockHandler = new MockHandler([
@@ -201,5 +171,24 @@ class ApiPhoneNumberTest extends TestCase
     {
         yield [true];
         yield [false];
+    }
+
+    /**
+     * Creates a mock client for testing.
+     */
+    private function aClient(
+        string $accessKey = self::ACCESS_KEY,
+        bool $useHttps = false,
+        ?ClientInterface $client = null,
+        ?MockHandler $mockHandler = null
+    ): Api&MockObject {
+        // Create a mock
+        $handlerStack = HandlerStack::create($mockHandler);
+
+        return $this
+            ->getMockBuilder(Api::class)
+            ->setConstructorArgs([$accessKey, $useHttps, $client, ['handler' => $handlerStack]])
+            ->onlyMethods([])
+            ->getMock();
     }
 }

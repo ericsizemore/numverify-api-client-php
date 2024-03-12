@@ -32,6 +32,8 @@ use function reset;
  * Role: Collection of callable countries.
  *
  * @implements Iterator<Country>
+ *
+ * @see \Numverify\Tests\Country\CollectionTest
  */
 class Collection implements Iterator, Countable, JsonSerializable
 {
@@ -70,8 +72,6 @@ class Collection implements Iterator, Countable, JsonSerializable
 
     /**
      * @inheritDoc
-     *
-     * @psalm-suppress PossiblyUnusedMethod
      */
     public function count(): int
     {

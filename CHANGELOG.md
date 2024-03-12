@@ -21,10 +21,12 @@ Simply replace the version numbers depending on which set of changes you wish to
 #### Added
 
   * `vimeo/psalm` added into dev-dependencies and workflow
+  * `TestDox` attribute used for all unit tests instead of '@testCase' (work in progress)
 
 #### Removed
 
   * Removed unnecessary constructor and properties from `Numverify\Exception\NumverifyApiResponseException`
+  * Removed '@testCase' annotation from all unit tests.
 
 ### 3.0.0 (2024-03-10)
 

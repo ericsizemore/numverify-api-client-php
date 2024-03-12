@@ -17,23 +17,23 @@ declare(strict_types=1);
 namespace Numverify\Tests;
 
 use GuzzleHttp\{
-    ClientInterface,
-    Client
+    Client,
+    ClientInterface
 };
 use Iterator;
 use Numverify\Api;
 use PHPUnit\Framework\{
     Attributes\CoversClass,
     Attributes\DataProvider,
+    Attributes\TestDox,
     TestCase
 };
 use ReflectionClass;
 
+use function array_shift;
 use function sys_get_temp_dir;
 
 use const DIRECTORY_SEPARATOR;
-
-use function array_shift;
 
 /**
  * @internal
@@ -43,12 +43,8 @@ class ApiTest extends TestCase
 {
     private const ACCESS_KEY = 'SomeAccessKey';
 
-    /**
-     * @testCase Construction with default Guzzle client.
-     *
-     * @psalm-suppress DeprecatedMethod
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('Construction with default Guzzle client with $useHttps.')]
     public function testConstructionWithDefaultClient(bool $useHttps): void
     {
         $api = new Api(self::ACCESS_KEY, $useHttps);
@@ -64,14 +60,12 @@ class ApiTest extends TestCase
         $client = self::parseGuzzleConfig($client);
 
         $expected = ($useHttps ? 'https' : 'http') . '://apilayer.net/api';
-        $actual   = (string) $client['base_uri']; // @phpstan-ignore-line
+        $actual   = $client['base_uri'];
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @testCase Construction with custom Guzzle client.
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('Construction with custom Guzzle client with $useHttps.')]
     public function testConstructionWithCustomClient(bool $useHttps): void
     {
         $api = new Api(self::ACCESS_KEY, $useHttps, new Client(['base_uri' => 'http://apilayer.net/api']));
@@ -87,14 +81,12 @@ class ApiTest extends TestCase
         $client = self::parseGuzzleConfig($client);
 
         $expected = 'http://apilayer.net/api';
-        $actual   = (string) $client['base_uri']; // @phpstan-ignore-line
+        $actual   = $client['base_uri'];
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @testCase Construction with default Guzzle client, extra options.
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('Construction with default Guzzle client, extra options with $useHttps.')]
     public function testConstructionWithDefaultClientExtraOptions(bool $useHttps): void
     {
         $api = new Api(self::ACCESS_KEY, $useHttps, null, ['timeout' => 10]);
@@ -110,28 +102,13 @@ class ApiTest extends TestCase
         $client = self::parseGuzzleConfig($client);
 
         $expected = ($useHttps ? 'https' : 'http') . '://apilayer.net/api';
-        $actual   = (string) $client['base_uri']; // @phpstan-ignore-line
+        $actual   = $client['base_uri'];
         self::assertSame($expected, $actual);
         self::assertSame(10, $client['timeout']);
     }
 
-    /**
-     * @return array<array-key, mixed>
-     */
-    private static function parseGuzzleConfig(Client $client): array
-    {
-        $client = (array) $client;
-
-        /** @var array<array-key, mixed> $config */
-        $config = array_shift($client);
-
-        return $config;
-    }
-
-    /**
-     * @testCase Construction with default Guzzle client, with cache path.
-     */
     #[DataProvider('dataProviderForHttp')]
+    #[TestDox('Construction with default Guzzle client, with cache path and $useHttps.')]
     public function testConstructionWithCachePathOption(bool $useHttps): void
     {
         $api = new Api(self::ACCESS_KEY, $useHttps, null, ['cachePath' => sys_get_temp_dir()]);
@@ -150,5 +127,23 @@ class ApiTest extends TestCase
     {
         yield [true];
         yield [false];
+    }
+
+    /**
+     * @return array<string, string|int>
+     */
+    private static function parseGuzzleConfig(Client $client): array
+    {
+        $client = (array) $client;
+
+        /** @var array<array-key, mixed> $config */
+        $config = array_shift($client);
+
+        /** @var array<string, string|int> $config */
+        $config = [
+            'base_uri' => (string) $config['base_uri'], // @phpstan-ignore-line
+            'timeout'  => $config['timeout'] ?? 0,
+        ];
+        return $config;
     }
 }

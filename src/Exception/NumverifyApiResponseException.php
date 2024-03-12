@@ -20,5 +20,7 @@ use RuntimeException;
 
 /**
  * Thrown when the Numverify API returns an API response that is unexpected.
+ *
+ * @see \Numverify\Tests\Exception\NumverifyApiResponseExceptionTest
  */
 class NumverifyApiResponseException extends RuntimeException {}

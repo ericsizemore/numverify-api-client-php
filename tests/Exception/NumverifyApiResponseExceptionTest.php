@@ -16,8 +16,8 @@ declare(strict_types=1);
 
 namespace Numverify\Tests\Exception;
 
-use PHPUnit\Framework\TestCase;
 use Numverify\Exception\NumverifyApiResponseException;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**

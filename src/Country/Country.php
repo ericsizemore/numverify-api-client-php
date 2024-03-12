@@ -24,6 +24,8 @@ use function sprintf;
 /**
  * Country
  * Role: Value object that represents a callable country.
+ *
+ * @see \Numverify\Tests\Country\CountryTest
  */
 readonly class Country implements Stringable, JsonSerializable
 {
