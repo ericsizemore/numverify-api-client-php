@@ -61,6 +61,13 @@ use function trim;
 class Api
 {
     /**
+     * Current version of the Numverify package.
+     *
+     * @var string
+     */
+    public const LIBRARY_VERSION = '3.0.1';
+
+    /**
      * URL for Numverify's "Free" plan.
      *
      * @see https://numverify.com/product
@@ -150,8 +157,7 @@ class Api
             ]);
         } catch (ServerException $serverException) {
             // >= 400 <= 500 status code
-            // wrapping ServerException with NumverifyApiFailureException as just checking
-            // getStatusCode() !== 200, like in self::validateAndDecodeResponse(), won't work on server error codes.
+            // wrap ServerException with NumverifyApiFailureException
             throw new NumverifyApiFailureException($serverException->getResponse());
         }
 
@@ -177,8 +183,7 @@ class Api
             ]);
         } catch (ServerException $serverException) {
             // >= 400 <= 500 status code
-            // wrapping ServerException with NumverifyApiFailureException as just checking
-            // getStatusCode() !== 200, like in self::validateAndDecodeResponse(), won't work on server error codes.
+            // wrap ServerException with NumverifyApiFailureException
             throw new NumverifyApiFailureException($serverException->getResponse());
         }
 
@@ -220,27 +225,21 @@ class Api
             throw new NumverifyApiFailureException($response);
         }
 
-        if ($asArray) {
-            /**
-             * @var ApiJsonArray $body
-             */
-            $body = json_decode($response->getBody()->getContents(), true);
-
-            if (isset($body['success']) && $body['success'] === false) {
-                throw new NumverifyApiFailureException($response);
-            }
-
-            return $body;
-        }
+        /**
+         * @var ApiJsonArray | ApiCountryJsonArray | stdClass $body
+         */
+        $body = json_decode($response->getBody()->getContents(), $asArray);
 
         /**
-         * @var stdClass $body
+         * @var ApiJsonArray | ApiCountryJsonArray $data
          */
-        $body = json_decode($response->getBody()->getContents());
+        $data = $asArray ? $body : (array) $body;
 
-        if (isset($body->success) && $body->success === false) {
+        if (isset($data['success']) && $data['success'] === false) {
             throw new NumverifyApiFailureException($response);
         }
+
+        unset($data);
 
         return $body;
     }
@@ -258,10 +257,9 @@ class Api
      */
     private static function buildCacheHandler(array $options): array
     {
-        /** @var string|null $cachePath */
-        $cachePath = $options['cachePath'] ?? null;
+        $cachePath = (string) ($options['cachePath'] ?? null); // @phpstan-ignore-line
 
-        if ($cachePath !== null && is_dir($cachePath) && is_writable($cachePath)) {
+        if (is_dir($cachePath) && is_writable($cachePath)) {
             $handlerStack = HandlerStack::create();
             $handlerStack->push(middleware: new CacheMiddleware(cacheStrategy: new PrivateCacheStrategy(
                 cache: new Psr6CacheStorage(cachePool: new FilesystemAdapter(namespace: 'numverify', defaultLifetime: 300, directory: $cachePath))

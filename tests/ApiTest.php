@@ -41,7 +41,20 @@ use const DIRECTORY_SEPARATOR;
 #[CoversClass(Api::class)]
 class ApiTest extends TestCase
 {
+    /**
+     * Current version of the Numverify package.
+     *
+     * @var string
+     */
+    public const LIBRARY_VERSION = '3.0.1';
+
     private const ACCESS_KEY = 'SomeAccessKey';
+
+    #[TestDox('Verifies the Api::LIBRARY_VERSION constant returns the correct version string.')]
+    public function testApiReturnsCurrentLibraryVersion(): void
+    {
+        self::assertEquals(self::LIBRARY_VERSION, Api::LIBRARY_VERSION);
+    }
 
     #[DataProvider('dataProviderForHttp')]
     #[TestDox('Construction with default Guzzle client with $useHttps.')]

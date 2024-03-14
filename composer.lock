@@ -2130,12 +2130,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "ffce76bfb2bbc6f802dfbdf5090e67e0e87aaa38"
+                "reference": "32866fcbdb9ec6e858a9c62302cab634c63e9c26"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/ffce76bfb2bbc6f802dfbdf5090e67e0e87aaa38",
-                "reference": "ffce76bfb2bbc6f802dfbdf5090e67e0e87aaa38",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/32866fcbdb9ec6e858a9c62302cab634c63e9c26",
+                "reference": "32866fcbdb9ec6e858a9c62302cab634c63e9c26",
                 "shasum": ""
             },
             "require": {
@@ -2215,7 +2215,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-03-11T20:09:04+00:00"
+            "time": "2024-03-13T17:34:42+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2724,12 +2724,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "6fd5d55d691611de797f706875a2a99c17e8d598"
+                "reference": "5b77cb3070b7ca25fcdb964583cef15cddcfc926"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/6fd5d55d691611de797f706875a2a99c17e8d598",
-                "reference": "6fd5d55d691611de797f706875a2a99c17e8d598",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/5b77cb3070b7ca25fcdb964583cef15cddcfc926",
+                "reference": "5b77cb3070b7ca25fcdb964583cef15cddcfc926",
                 "shasum": ""
             },
             "require": {
@@ -2779,7 +2779,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-03-09T14:22:36+00:00"
+            "time": "2024-03-13T14:17:45+00:00"
         },
         {
             "name": "phpstan/phpstan-phpunit",

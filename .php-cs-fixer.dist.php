@@ -2,20 +2,7 @@
 
 declare(strict_types=1);
 
-$header = <<<'EOF'
-    This file is part of the Numverify API Client for PHP.
-
-    (c) 2024 Eric Sizemore <admin@secondversion.com>
-    (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
-
-    @license The MIT License
-
-    For the full copyright and license information, please view the LICENSE.md
-    file that was distributed with this source code.
-    EOF;
-
 $config = new PhpCsFixer\Config();
-
 $config
     ->setRiskyAllowed(true)
     ->setRules([
@@ -65,8 +52,7 @@ $config
         'declare_equal_normalize' => ['space' => 'none'],
         'declare_parentheses'     => true,
         'declare_strict_types'    => true,
-        'global_namespace_import' => ['import_classes' => true, 'import_constants' => true, 'import_functions' => true],
-        'header_comment'          => ['comment_type' => 'PHPDoc', 'header' => $header, 'separate' => 'top'],
+        //'global_namespace_import' => ['import_classes' => true, 'import_constants' => true, 'import_functions' => true],
     ])
     ->setLineEnding("\n")
     ->setFinder(
