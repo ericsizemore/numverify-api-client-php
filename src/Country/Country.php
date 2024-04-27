@@ -8,10 +8,9 @@ declare(strict_types=1);
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
  * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
- * @license The MIT License
- *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license. For the full copyright,
+ * license information, and credits/acknowledgements, please view the LICENSE
+ * and README files that were distributed with this source code.
  */
 
 namespace Numverify\Country;
@@ -27,12 +26,22 @@ use function sprintf;
  *
  * @see \Numverify\Tests\Country\CountryTest
  */
-readonly class Country implements Stringable, JsonSerializable
+readonly class Country implements JsonSerializable, Stringable
 {
     /**
      * Country constructor.
      */
     public function __construct(private string $countryCode, private string $countryName, private string $dialingCode) {}
+
+    /**
+     * {@inheritDoc}
+     *
+     * CountryCode: CountryName (DialingCode)
+     */
+    public function __toString(): string
+    {
+        return sprintf('%s: %s (%s)', $this->countryCode, $this->countryName, $this->dialingCode);
+    }
 
     /**
      * Get country code.
@@ -56,16 +65,6 @@ readonly class Country implements Stringable, JsonSerializable
     public function getDialingCode(): string
     {
         return $this->dialingCode;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * CountryCode: CountryName (DialingCode)
-     */
-    public function __toString(): string
-    {
-        return sprintf('%s: %s (%s)', $this->countryCode, $this->countryName, $this->dialingCode);
     }
 
     /**

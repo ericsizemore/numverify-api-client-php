@@ -8,10 +8,9 @@ declare(strict_types=1);
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
  * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
- * @license The MIT License
- *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license. For the full copyright,
+ * license information, and credits/acknowledgements, please view the LICENSE
+ * and README files that were distributed with this source code.
  */
 
 namespace Numverify\Tests\Country;
@@ -46,15 +45,6 @@ class CountryTest extends TestCase
         self::assertSame(self::DIALLING_CODE, $diallingCode);
     }
 
-    #[TestDox('Country implements Stringable and returns correct string representation.')]
-    public function testStringRepresentation(): void
-    {
-        $country = new Country(self::COUNTRY_CODE, self::COUNTRY_NAME, self::DIALLING_CODE);
-
-        $stringRepresentation = (string) $country;
-        self::assertSame('US: United States (+1)', $stringRepresentation);
-    }
-
     #[TestDox('Country implements JsonSerialize and returns array of country information.')]
     public function testJsonSerializeInterface(): void
     {
@@ -68,5 +58,14 @@ class CountryTest extends TestCase
         self::assertSame(self::COUNTRY_CODE, $object->countryCode);
         self::assertSame(self::COUNTRY_NAME, $object->countryName);
         self::assertSame(self::DIALLING_CODE, $object->diallingCode);
+    }
+
+    #[TestDox('Country implements Stringable and returns correct string representation.')]
+    public function testStringRepresentation(): void
+    {
+        $country = new Country(self::COUNTRY_CODE, self::COUNTRY_NAME, self::DIALLING_CODE);
+
+        $stringRepresentation = (string) $country;
+        self::assertSame('US: United States (+1)', $stringRepresentation);
     }
 }

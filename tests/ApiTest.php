@@ -8,26 +8,21 @@ declare(strict_types=1);
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
  * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
- * @license The MIT License
- *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license. For the full copyright,
+ * license information, and credits/acknowledgements, please view the LICENSE
+ * and README files that were distributed with this source code.
  */
 
 namespace Numverify\Tests;
 
-use GuzzleHttp\{
-    Client,
-    ClientInterface
-};
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Iterator;
 use Numverify\Api;
-use PHPUnit\Framework\{
-    Attributes\CoversClass,
-    Attributes\DataProvider,
-    Attributes\TestDox,
-    TestCase
-};
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 use function array_shift;
@@ -57,24 +52,16 @@ class ApiTest extends TestCase
     }
 
     #[DataProvider('dataProviderForHttp')]
-    #[TestDox('Construction with default Guzzle client with $useHttps.')]
-    public function testConstructionWithDefaultClient(bool $useHttps): void
+    #[TestDox('Construction with default Guzzle client, with cache path and $useHttps.')]
+    public function testConstructionWithCachePathOption(bool $useHttps): void
     {
-        $api = new Api(self::ACCESS_KEY, $useHttps);
+        $api = new Api(self::ACCESS_KEY, $useHttps, null, ['cachePath' => sys_get_temp_dir()]);
         self::assertObjectHasProperty('client', $api); // @phpstan-ignore-line
+        self::assertFileExists(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'numverify');
 
         $reflectionClass    = new ReflectionClass($api);
         $reflectionProperty = $reflectionClass->getProperty('client');
         self::assertInstanceOf(ClientInterface::class, $reflectionProperty->getValue($api));
-
-        /** @var Client $client */
-        $client = $reflectionProperty->getValue($api);
-
-        $client = self::parseGuzzleConfig($client);
-
-        $expected = ($useHttps ? 'https' : 'http') . '://apilayer.net/api';
-        $actual   = $client['base_uri'];
-        self::assertSame($expected, $actual);
     }
 
     #[DataProvider('dataProviderForHttp')]
@@ -94,6 +81,27 @@ class ApiTest extends TestCase
         $client = self::parseGuzzleConfig($client);
 
         $expected = 'http://apilayer.net/api';
+        $actual   = $client['base_uri'];
+        self::assertSame($expected, $actual);
+    }
+
+    #[DataProvider('dataProviderForHttp')]
+    #[TestDox('Construction with default Guzzle client with $useHttps.')]
+    public function testConstructionWithDefaultClient(bool $useHttps): void
+    {
+        $api = new Api(self::ACCESS_KEY, $useHttps);
+        self::assertObjectHasProperty('client', $api); // @phpstan-ignore-line
+
+        $reflectionClass    = new ReflectionClass($api);
+        $reflectionProperty = $reflectionClass->getProperty('client');
+        self::assertInstanceOf(ClientInterface::class, $reflectionProperty->getValue($api));
+
+        /** @var Client $client */
+        $client = $reflectionProperty->getValue($api);
+
+        $client = self::parseGuzzleConfig($client);
+
+        $expected = ($useHttps ? 'https' : 'http') . '://apilayer.net/api';
         $actual   = $client['base_uri'];
         self::assertSame($expected, $actual);
     }
@@ -120,19 +128,6 @@ class ApiTest extends TestCase
         self::assertSame(10, $client['timeout']);
     }
 
-    #[DataProvider('dataProviderForHttp')]
-    #[TestDox('Construction with default Guzzle client, with cache path and $useHttps.')]
-    public function testConstructionWithCachePathOption(bool $useHttps): void
-    {
-        $api = new Api(self::ACCESS_KEY, $useHttps, null, ['cachePath' => sys_get_temp_dir()]);
-        self::assertObjectHasProperty('client', $api); // @phpstan-ignore-line
-        self::assertFileExists(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'numverify');
-
-        $reflectionClass    = new ReflectionClass($api);
-        $reflectionProperty = $reflectionClass->getProperty('client');
-        self::assertInstanceOf(ClientInterface::class, $reflectionProperty->getValue($api));
-    }
-
     /**
      * @psalm-suppress PossiblyUnusedMethod
      */
@@ -143,7 +138,7 @@ class ApiTest extends TestCase
     }
 
     /**
-     * @return array<string, string|int>
+     * @return array<string, int|string>
      */
     private static function parseGuzzleConfig(Client $client): array
     {
@@ -152,7 +147,7 @@ class ApiTest extends TestCase
         /** @var array<array-key, mixed> $config */
         $config = array_shift($client);
 
-        /** @var array<string, string|int> $config */
+        /** @var array<string, int|string> $config */
         $config = [
             'base_uri' => (string) $config['base_uri'], // @phpstan-ignore-line
             'timeout'  => $config['timeout'] ?? 0,

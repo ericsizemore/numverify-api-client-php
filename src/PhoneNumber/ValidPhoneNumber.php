@@ -8,10 +8,9 @@ declare(strict_types=1);
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
  * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
- * @license The MIT License
- *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license. For the full copyright,
+ * license information, and credits/acknowledgements, please view the LICENSE
+ * and README files that were distributed with this source code.
  */
 
 namespace Numverify\PhoneNumber;
@@ -30,26 +29,6 @@ use function sprintf;
  */
 class ValidPhoneNumber implements PhoneNumberInterface
 {
-    private readonly bool $valid;
-
-    private readonly string $number;
-
-    private readonly string $localFormat;
-
-    private readonly string $internationalFormat;
-
-    private readonly string $countryPrefix;
-
-    private readonly string $countryCode;
-
-    private readonly string $countryName;
-
-    private readonly string $location;
-
-    private readonly string $carrier;
-
-    private readonly string $lineType;
-
     /**
      * @var string[]
      */
@@ -57,6 +36,25 @@ class ValidPhoneNumber implements PhoneNumberInterface
         'valid', 'number', 'local_format', 'international_format', 'country_prefix',
         'country_code', 'country_name', 'location', 'carrier', 'line_type',
     ];
+
+    private readonly string $carrier;
+
+    private readonly string $countryCode;
+
+    private readonly string $countryName;
+
+    private readonly string $countryPrefix;
+
+    private readonly string $internationalFormat;
+
+    private readonly string $lineType;
+
+    private readonly string $localFormat;
+
+    private readonly string $location;
+
+    private readonly string $number;
+    private readonly bool $valid;
 
     /**
      * ValidPhoneNumber constructor.
@@ -78,43 +76,40 @@ class ValidPhoneNumber implements PhoneNumberInterface
     }
 
     /**
-     * @inheritDoc
+     * Debug info.
+     *
+     * @return array{
+     *     valid: bool,
+     *     number: string,
+     *     localFormat: string,
+     *     internationalFormat: string,
+     *     countryPrefix: string,
+     *     countryCode: string,
+     *     countryName: string,
+     *     location: string,
+     *     carrier: string,
+     *     lineType: string
+     * }
      */
-    public function isValid(): bool
+    public function __debugInfo(): array
     {
-        return true;
+        return $this->jsonSerialize();
     }
 
     /**
      * @inheritDoc
      */
-    public function getNumber(): string
+    public function __toString(): string
     {
         return $this->number;
     }
 
     /**
-     * Get local format.
+     * Get carrier.
      */
-    public function getLocalFormat(): string
+    public function getCarrier(): string
     {
-        return $this->localFormat;
-    }
-
-    /**
-     * Get international format.
-     */
-    public function getInternationalFormat(): string
-    {
-        return $this->internationalFormat;
-    }
-
-    /**
-     * Get country prefix.
-     */
-    public function getCountryPrefix(): string
-    {
-        return $this->countryPrefix;
+        return $this->carrier;
     }
 
     /**
@@ -134,19 +129,19 @@ class ValidPhoneNumber implements PhoneNumberInterface
     }
 
     /**
-     * Get location.
+     * Get country prefix.
      */
-    public function getLocation(): string
+    public function getCountryPrefix(): string
     {
-        return $this->location;
+        return $this->countryPrefix;
     }
 
     /**
-     * Get carrier.
+     * Get international format.
      */
-    public function getCarrier(): string
+    public function getInternationalFormat(): string
     {
-        return $this->carrier;
+        return $this->internationalFormat;
     }
 
     /**
@@ -158,11 +153,35 @@ class ValidPhoneNumber implements PhoneNumberInterface
     }
 
     /**
+     * Get local format.
+     */
+    public function getLocalFormat(): string
+    {
+        return $this->localFormat;
+    }
+
+    /**
+     * Get location.
+     */
+    public function getLocation(): string
+    {
+        return $this->location;
+    }
+
+    /**
      * @inheritDoc
      */
-    public function __toString(): string
+    public function getNumber(): string
     {
         return $this->number;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isValid(): bool
+    {
+        return true;
     }
 
     /**
@@ -195,27 +214,6 @@ class ValidPhoneNumber implements PhoneNumberInterface
             'carrier'             => $this->carrier,
             'lineType'            => $this->lineType,
         ];
-    }
-
-    /**
-     * Debug info.
-     *
-     * @return array{
-     *     valid: bool,
-     *     number: string,
-     *     localFormat: string,
-     *     internationalFormat: string,
-     *     countryPrefix: string,
-     *     countryCode: string,
-     *     countryName: string,
-     *     location: string,
-     *     carrier: string,
-     *     lineType: string
-     * }
-     */
-    public function __debugInfo(): array
-    {
-        return $this->jsonSerialize();
     }
 
     /**

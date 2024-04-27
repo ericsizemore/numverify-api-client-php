@@ -8,10 +8,9 @@ declare(strict_types=1);
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
  * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
- * @license The MIT License
- *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license. For the full copyright,
+ * license information, and credits/acknowledgements, please view the LICENSE
+ * and README files that were distributed with this source code.
  */
 
 namespace Numverify\PhoneNumber;
@@ -30,11 +29,10 @@ use function sprintf;
  */
 class InvalidPhoneNumber implements PhoneNumberInterface
 {
-    private readonly bool $valid;
+    private const FIELDS = ['valid', 'number'];
 
     private readonly string $number;
-
-    private const FIELDS = ['valid', 'number'];
+    private readonly bool $valid;
 
     /**
      * InvalidPhoneNumber constructor.
@@ -48,11 +46,21 @@ class InvalidPhoneNumber implements PhoneNumberInterface
     }
 
     /**
+     * Debug info.
+     *
+     * @return array<string, bool|string>
+     */
+    public function __debugInfo(): array
+    {
+        return $this->jsonSerialize();
+    }
+
+    /**
      * @inheritDoc
      */
-    public function isValid(): bool
+    public function __toString(): string
     {
-        return false;
+        return $this->number;
     }
 
     /**
@@ -66,9 +74,9 @@ class InvalidPhoneNumber implements PhoneNumberInterface
     /**
      * @inheritDoc
      */
-    public function __toString(): string
+    public function isValid(): bool
     {
-        return $this->number;
+        return false;
     }
 
     /**
@@ -82,16 +90,6 @@ class InvalidPhoneNumber implements PhoneNumberInterface
             'valid'  => $this->valid,
             'number' => $this->number,
         ];
-    }
-
-    /**
-     * Debug info.
-     *
-     * @return array<string, bool|string>
-     */
-    public function __debugInfo(): array
-    {
-        return $this->jsonSerialize();
     }
 
     /**

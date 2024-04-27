@@ -8,25 +8,20 @@ declare(strict_types=1);
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
  * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
- * @license The MIT License
- *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license. For the full copyright,
+ * license information, and credits/acknowledgements, please view the LICENSE
+ * and README files that were distributed with this source code.
  */
 
 namespace Numverify\Tests\PhoneNumber;
 
 use Iterator;
-use Numverify\{
-    Exception\NumverifyApiResponseException,
-    PhoneNumber\InvalidPhoneNumber
-};
-use PHPUnit\Framework\{
-    Attributes\CoversClass,
-    Attributes\DataProvider,
-    Attributes\TestDox,
-    TestCase
-};
+use Numverify\Exception\NumverifyApiResponseException;
+use Numverify\PhoneNumber\InvalidPhoneNumber;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 use function json_decode;
@@ -39,9 +34,8 @@ use function print_r;
 #[CoversClass(InvalidPhoneNumber::class)]
 class InvalidPhoneNumberTest extends TestCase
 {
-    private const VALID = false;
-
     private const NUMBER = '14158586273';
+    private const VALID  = false;
 
     private stdClass $validatedPhoneNumberData;
 
@@ -52,13 +46,14 @@ class InvalidPhoneNumberTest extends TestCase
         $this->validatedPhoneNumberData->number = self::NUMBER;
     }
 
-    #[TestDox('InvalidPhoneNumber returns false on isValid.')]
-    public function testIsValid(): void
+    #[TestDox('InvalidPhoneNumber sets __debugInfo for var_dump to return number data as array.')]
+    public function testDebugInfo(): void
     {
         $invalidPhoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
 
-        $isValid = $invalidPhoneNumber->isValid();
-        self::assertFalse($isValid);
+        $debugInfo = print_r($invalidPhoneNumber, true);
+        self::assertStringContainsString('valid', $debugInfo);
+        self::assertStringContainsString('number', $debugInfo);
     }
 
     #[TestDox('InvalidPhoneNumber getNumber returns number.')]
@@ -70,13 +65,13 @@ class InvalidPhoneNumberTest extends TestCase
         self::assertSame(self::NUMBER, $number);
     }
 
-    #[TestDox('InvalidPhoneNumber uses Stringable interface to return proper string representation.')]
-    public function testToString(): void
+    #[TestDox('InvalidPhoneNumber returns false on isValid.')]
+    public function testIsValid(): void
     {
         $invalidPhoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
 
-        $stringRepresentation = (string) $invalidPhoneNumber;
-        self::assertSame(self::NUMBER, $stringRepresentation);
+        $isValid = $invalidPhoneNumber->isValid();
+        self::assertFalse($isValid);
     }
 
     #[TestDox('InvalidPhoneNumber uses JsonSerializable interface to return number data as array.')]
@@ -94,16 +89,6 @@ class InvalidPhoneNumberTest extends TestCase
         self::assertSame(self::NUMBER, $object->number);
     }
 
-    #[TestDox('InvalidPhoneNumber sets __debugInfo for var_dump to return number data as array.')]
-    public function testDebugInfo(): void
-    {
-        $invalidPhoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
-
-        $debugInfo = print_r($invalidPhoneNumber, true);
-        self::assertStringContainsString('valid', $debugInfo);
-        self::assertStringContainsString('number', $debugInfo);
-    }
-
     #[DataProvider('dataProviderForFields')]
     #[TestDox('InvalidPhoneNumber throws a NumverifyApiResponseException exception if missing data. Using field: $missingField')]
     public function testPhoneNumberDataValidation(string $missingField): void
@@ -112,6 +97,15 @@ class InvalidPhoneNumberTest extends TestCase
 
         $this->expectException(NumverifyApiResponseException::class);
         new InvalidPhoneNumber($this->validatedPhoneNumberData);
+    }
+
+    #[TestDox('InvalidPhoneNumber uses Stringable interface to return proper string representation.')]
+    public function testToString(): void
+    {
+        $invalidPhoneNumber = new InvalidPhoneNumber($this->validatedPhoneNumberData);
+
+        $stringRepresentation = (string) $invalidPhoneNumber;
+        self::assertSame(self::NUMBER, $stringRepresentation);
     }
 
     /**

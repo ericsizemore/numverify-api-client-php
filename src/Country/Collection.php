@@ -8,10 +8,9 @@ declare(strict_types=1);
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
  * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
- * @license The MIT License
- *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license. For the full copyright,
+ * license information, and credits/acknowledgements, please view the LICENSE
+ * and README files that were distributed with this source code.
  */
 
 namespace Numverify\Country;
@@ -21,7 +20,6 @@ use Iterator;
 use JsonSerializable;
 use LogicException;
 
-use function count;
 use function current;
 use function key;
 use function next;
@@ -35,7 +33,7 @@ use function reset;
  *
  * @see \Numverify\Tests\Country\CollectionTest
  */
-class Collection implements Iterator, Countable, JsonSerializable
+class Collection implements Countable, Iterator, JsonSerializable
 {
     /** @var Country[] */
     private array $byCountryCode = [];
@@ -52,6 +50,28 @@ class Collection implements Iterator, Countable, JsonSerializable
             $this->byCountryCode[$country->getCountryCode()] = $country;
             $this->byName[$country->getCountryName()]        = $country;
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function count(): int
+    {
+        return \count($this->byCountryCode);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function current(): Country
+    {
+        $country = current($this->byCountryCode);
+
+        if ($country === false) {
+            throw new LogicException('Iteration error - current returned false');
+        }
+
+        return $country;
     }
 
     /**
@@ -72,14 +92,6 @@ class Collection implements Iterator, Countable, JsonSerializable
 
     /**
      * @inheritDoc
-     */
-    public function count(): int
-    {
-        return count($this->byCountryCode);
-    }
-
-    /**
-     * @inheritDoc
      *
      * @return object[]
      */
@@ -91,29 +103,7 @@ class Collection implements Iterator, Countable, JsonSerializable
     /**
      * @inheritDoc
      */
-    public function rewind(): void
-    {
-        reset($this->byCountryCode);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function current(): Country
-    {
-        $country = current($this->byCountryCode);
-
-        if ($country === false) {
-            throw new LogicException('Iteration error - current returned false');
-        }
-
-        return $country;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function key(): int | string | null
+    public function key(): null|int|string
     {
         return key($this->byCountryCode);
     }
@@ -124,6 +114,14 @@ class Collection implements Iterator, Countable, JsonSerializable
     public function next(): void
     {
         next($this->byCountryCode);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function rewind(): void
+    {
+        reset($this->byCountryCode);
     }
 
     /**

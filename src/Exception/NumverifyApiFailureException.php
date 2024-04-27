@@ -8,10 +8,9 @@ declare(strict_types=1);
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
  * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
- * @license The MIT License
- *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license. For the full copyright,
+ * license information, and credits/acknowledgements, please view the LICENSE
+ * and README files that were distributed with this source code.
  */
 
 namespace Numverify\Exception;
@@ -31,11 +30,10 @@ use function sprintf;
  */
 class NumverifyApiFailureException extends RuntimeException
 {
-    private readonly int $statusCode;
+    private readonly string $body;
 
     private readonly string $reasonPhrase;
-
-    private readonly string $body;
+    private readonly int $statusCode;
 
     public function __construct(ResponseInterface $response)
     {
@@ -48,9 +46,9 @@ class NumverifyApiFailureException extends RuntimeException
         parent::__construct($message);
     }
 
-    public function getStatusCode(): int
+    public function getBody(): string
     {
-        return $this->statusCode;
+        return $this->body;
     }
 
     public function getReasonPhrase(): string
@@ -58,9 +56,9 @@ class NumverifyApiFailureException extends RuntimeException
         return $this->reasonPhrase;
     }
 
-    public function getBody(): string
+    public function getStatusCode(): int
     {
-        return $this->body;
+        return $this->statusCode;
     }
 
     /**

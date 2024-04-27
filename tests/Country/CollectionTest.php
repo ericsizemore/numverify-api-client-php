@@ -8,27 +8,22 @@ declare(strict_types=1);
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
  * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
- * @license The MIT License
- *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license. For the full copyright,
+ * license information, and credits/acknowledgements, please view the LICENSE
+ * and README files that were distributed with this source code.
  */
 
 namespace Numverify\Tests\Country;
 
 use Iterator;
 use LogicException;
-use Numverify\Country\{
-    Collection,
-    Country
-};
-use PHPUnit\Framework\{
-    Attributes\CoversClass,
-    Attributes\DataProvider,
-    Attributes\TestDox,
-    Attributes\UsesClass,
-    TestCase
-};
+use Numverify\Country\Collection;
+use Numverify\Country\Country;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\UsesClass;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
@@ -38,11 +33,10 @@ use stdClass;
 #[UsesClass(Country::class)]
 class CollectionTest extends TestCase
 {
-    private Country $countryUs;
-
     private Country $countryGb;
 
     private Country $countryJp;
+    private Country $countryUs;
 
     /**
      * Set up countries.
@@ -52,6 +46,18 @@ class CollectionTest extends TestCase
         $this->countryUs = new Country('US', 'United States', '+1');
         $this->countryGb = new Country('GB', 'United Kingdom', '+44');
         $this->countryJp = new Country('JP', 'Japan', '+81');
+    }
+
+    /**
+     * @param Country[] $countries
+     */
+    #[DataProvider('dataProviderForCountryCounts')]
+    #[TestDox('Collection uses the Countable interface to implement count. Using $countries results in $expectedCount.')]
+    public function testCount(array $countries, int $expectedCount): void
+    {
+        $collection = new Collection(...$countries);
+        self::assertSame($expectedCount, $collection->count());
+        self::assertCount($expectedCount, $collection);
     }
 
     #[TestDox('Collection is able to find countries by country code.')]
@@ -83,15 +89,42 @@ class CollectionTest extends TestCase
     }
 
     /**
-     * @param Country[] $countries
+     * @psalm-suppress NoValue
      */
-    #[DataProvider('dataProviderForCountryCounts')]
-    #[TestDox('Collection uses the Countable interface to implement count. Using $countries results in $expectedCount.')]
-    public function testCount(array $countries, int $expectedCount): void
+    #[TestDox('Collection iteration failure if manually manipulating the iterator (no elements).')]
+    public function testIterationCurrentFailureNoElements(): void
     {
-        $collection = new Collection(...$countries);
-        self::assertSame($expectedCount, $collection->count());
-        self::assertCount($expectedCount, $collection);
+        $collection = new Collection(...[]);
+
+        $this->expectException(LogicException::class);
+        $collection->current();
+    }
+
+    #[TestDox('Collection iteration failure if manually manipulating the iterator (with elements).')]
+    public function testIterationCurrentFailureWithElements(): void
+    {
+        $collection = new Collection(...[$this->countryUs]);
+        $collection->next();
+
+        $this->expectException(LogicException::class);
+        $collection->current();
+    }
+
+    #[TestDox('Collection can be iterated due to implementing the Iterator interface.')]
+    public function testIterator(): void
+    {
+        $collection        = new Collection(...[$this->countryUs, $this->countryGb, $this->countryJp]);
+        $expectedCountries = ['US' => false, 'GB' => false, 'JP' => false];
+
+        foreach ($collection as $countryCode => $country) {
+            /** @var string $countryCode */
+            $expectedCountries[$countryCode] = true;
+            self::assertInstanceOf(Country::class, $country); // @phpstan-ignore-line
+        }
+
+        foreach ($expectedCountries as $expectedCountry) {
+            self::assertTrue($expectedCountry);
+        }
     }
 
     #[TestDox('Collection uses the JsonSerialize interface to return country information as an array.')]
@@ -124,45 +157,6 @@ class CollectionTest extends TestCase
         self::assertSame('+1', (string) $countryUs->diallingCode);
         self::assertSame('+44', (string) $countryGb->diallingCode);
         self::assertSame('+81', (string) $countryJp->diallingCode);
-    }
-
-    #[TestDox('Collection can be iterated due to implementing the Iterator interface.')]
-    public function testIterator(): void
-    {
-        $collection        = new Collection(...[$this->countryUs, $this->countryGb, $this->countryJp]);
-        $expectedCountries = ['US' => false, 'GB' => false, 'JP' => false];
-
-        foreach ($collection as $countryCode => $country) {
-            /** @var string $countryCode */
-            $expectedCountries[$countryCode] = true;
-            self::assertInstanceOf(Country::class, $country); // @phpstan-ignore-line
-        }
-
-        foreach ($expectedCountries as $expectedCountry) {
-            self::assertTrue($expectedCountry);
-        }
-    }
-
-    #[TestDox('Collection iteration failure if manually manipulating the iterator (with elements).')]
-    public function testIterationCurrentFailureWithElements(): void
-    {
-        $collection = new Collection(...[$this->countryUs]);
-        $collection->next();
-
-        $this->expectException(LogicException::class);
-        $collection->current();
-    }
-
-    /**
-     * @psalm-suppress NoValue
-     */
-    #[TestDox('Collection iteration failure if manually manipulating the iterator (no elements).')]
-    public function testIterationCurrentFailureNoElements(): void
-    {
-        $collection = new Collection(...[]);
-
-        $this->expectException(LogicException::class);
-        $collection->current();
     }
 
     /**

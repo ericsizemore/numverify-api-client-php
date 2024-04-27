@@ -8,25 +8,20 @@ declare(strict_types=1);
  * (c) 2024 Eric Sizemore <admin@secondversion.com>
  * (c) 2018-2021 Mark Rogoyski <mark@rogoyski.com>
  *
- * @license The MIT License
- *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * This source file is subject to the MIT license. For the full copyright,
+ * license information, and credits/acknowledgements, please view the LICENSE
+ * and README files that were distributed with this source code.
  */
 
 namespace Numverify\Tests\PhoneNumber;
 
 use Iterator;
-use Numverify\{
-    Exception\NumverifyApiResponseException,
-    PhoneNumber\ValidPhoneNumber
-};
-use PHPUnit\Framework\{
-    Attributes\CoversClass,
-    Attributes\DataProvider,
-    Attributes\TestDox,
-    TestCase
-};
+use Numverify\Exception\NumverifyApiResponseException;
+use Numverify\PhoneNumber\ValidPhoneNumber;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 use function json_decode;
@@ -39,25 +34,24 @@ use function print_r;
 #[CoversClass(ValidPhoneNumber::class)]
 class ValidPhoneNumberTest extends TestCase
 {
-    private const VALID = true;
-
-    private const NUMBER = '14158586273';
-
-    private const LOCAL_FORMAT = '4158586273';
-
-    private const INTERNATIONAL_FORMAT = '+14158586273';
-
-    private const COUNTRY_PREFIX = '+1';
+    private const CARRIER = 'AT&T Mobility LLC';
 
     private const COUNTRY_CODE = 'US';
 
     private const COUNTRY_NAME = 'United States of America';
 
-    private const LOCATION = 'Novato';
+    private const COUNTRY_PREFIX = '+1';
 
-    private const CARRIER = 'AT&T Mobility LLC';
+    private const INTERNATIONAL_FORMAT = '+14158586273';
 
     private const LINE_TYPE = 'mobile';
+
+    private const LOCAL_FORMAT = '4158586273';
+
+    private const LOCATION = 'Novato';
+
+    private const NUMBER = '14158586273';
+    private const VALID  = true;
 
     private stdClass $validatedPhoneNumberData;
 
@@ -76,13 +70,23 @@ class ValidPhoneNumberTest extends TestCase
         $this->validatedPhoneNumberData->line_type            = self::LINE_TYPE;
     }
 
-    #[TestDox('ValidPhoneNumber returns true on isValid.')]
-    public function testIsValid(): void
+    #[TestDox('ValidPhoneNumber sets __debugInfo for var_dump to return number data as array.')]
+    public function testDebugInfo(): void
     {
         $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
 
-        $isValid = $validPhoneNumber->isValid();
-        self::assertTrue($isValid);
+        $debugInfo = print_r($validPhoneNumber, true);
+
+        self::assertStringContainsString('valid', $debugInfo);
+        self::assertStringContainsString('number', $debugInfo);
+        self::assertStringContainsString('localFormat', $debugInfo);
+        self::assertStringContainsString('internationalFormat', $debugInfo);
+        self::assertStringContainsString('countryPrefix', $debugInfo);
+        self::assertStringContainsString('countryCode', $debugInfo);
+        self::assertStringContainsString('countryName', $debugInfo);
+        self::assertStringContainsString('location', $debugInfo);
+        self::assertStringContainsString('carrier', $debugInfo);
+        self::assertStringContainsString('lineType', $debugInfo);
     }
 
     #[TestDox('ValidPhoneNumber \'getters\' returns appropriate data.')]
@@ -111,13 +115,13 @@ class ValidPhoneNumberTest extends TestCase
         self::assertSame(self::LINE_TYPE, $lineType);
     }
 
-    #[TestDox('ValidPhoneNumber uses Stringable interface to return proper string representation of number data.')]
-    public function testToString(): void
+    #[TestDox('ValidPhoneNumber returns true on isValid.')]
+    public function testIsValid(): void
     {
         $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
 
-        $stringRepresentation = (string) $validPhoneNumber;
-        self::assertSame(self::NUMBER, $stringRepresentation);
+        $isValid = $validPhoneNumber->isValid();
+        self::assertTrue($isValid);
     }
 
     #[TestDox('ValidPhoneNumber uses JsonSerializable interface to return number data as array.')]
@@ -142,25 +146,6 @@ class ValidPhoneNumberTest extends TestCase
         self::assertSame(self::LINE_TYPE, $object->lineType);
     }
 
-    #[TestDox('ValidPhoneNumber sets __debugInfo for var_dump to return number data as array.')]
-    public function testDebugInfo(): void
-    {
-        $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
-
-        $debugInfo = print_r($validPhoneNumber, true);
-
-        self::assertStringContainsString('valid', $debugInfo);
-        self::assertStringContainsString('number', $debugInfo);
-        self::assertStringContainsString('localFormat', $debugInfo);
-        self::assertStringContainsString('internationalFormat', $debugInfo);
-        self::assertStringContainsString('countryPrefix', $debugInfo);
-        self::assertStringContainsString('countryCode', $debugInfo);
-        self::assertStringContainsString('countryName', $debugInfo);
-        self::assertStringContainsString('location', $debugInfo);
-        self::assertStringContainsString('carrier', $debugInfo);
-        self::assertStringContainsString('lineType', $debugInfo);
-    }
-
     #[DataProvider('dataProviderForFields')]
     #[TestDox('ValidPhoneNumber throws a NumverifyApiResponseException exception if missing data. Using field: $missingField')]
     public function testPhoneNumberDataValidation(string $missingField): void
@@ -169,6 +154,15 @@ class ValidPhoneNumberTest extends TestCase
 
         $this->expectException(NumverifyApiResponseException::class);
         new ValidPhoneNumber($this->validatedPhoneNumberData);
+    }
+
+    #[TestDox('ValidPhoneNumber uses Stringable interface to return proper string representation of number data.')]
+    public function testToString(): void
+    {
+        $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);
+
+        $stringRepresentation = (string) $validPhoneNumber;
+        self::assertSame(self::NUMBER, $stringRepresentation);
     }
 
     /**
