@@ -56,7 +56,8 @@ class CollectionTest extends TestCase
     public function testCount(array $countries, int $expectedCount): void
     {
         $collection = new Collection(...$countries);
-        self::assertCount($expectedCount, $collection->count());
+
+        self::assertSame($expectedCount, $collection->count());
         self::assertCount($expectedCount, $collection);
     }
 
