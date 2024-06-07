@@ -17,12 +17,14 @@ namespace Numverify\Tests\Exception;
 
 use GuzzleHttp\Psr7\Response;
 use Numverify\Exception\NumverifyApiFailureException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
+#[CoversClass(NumverifyApiFailureException::class)]
 class NumverifyApiFailureExceptionTest extends TestCase
 {
     private const BODY = 'server error';

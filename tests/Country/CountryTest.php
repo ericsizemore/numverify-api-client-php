@@ -17,12 +17,14 @@ namespace Numverify\Tests\Country;
 
 use Numverify\Country\Country;
 use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
  * @internal
  */
+#[CoversClass(Country::class)]
 class CountryTest extends TestCase
 {
     private const COUNTRY_CODE = 'US';

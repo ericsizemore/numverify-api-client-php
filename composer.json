@@ -43,7 +43,9 @@
     "require-dev": {
         "esi/phpunit-coverage-check": "^2.0",
         "friendsofphp/php-cs-fixer": "^3.58",
+        "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^1.11",
+        "phpstan/phpstan-deprecation-rules": "^1.2",
         "phpstan/phpstan-phpunit": "^1.4",
         "phpstan/phpstan-strict-rules": "^1.6",
         "phpunit/phpunit": "^11.1",
@@ -63,6 +65,11 @@
     "autoload-dev": {
         "psr-4": {
             "Numverify\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
         }
     },
     "extra": {

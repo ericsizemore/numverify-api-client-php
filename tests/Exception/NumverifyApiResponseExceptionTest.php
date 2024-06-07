@@ -16,11 +16,13 @@ declare(strict_types=1);
 namespace Numverify\Tests\Exception;
 
 use Numverify\Exception\NumverifyApiResponseException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
+#[CoversClass(NumverifyApiResponseException::class)]
 class NumverifyApiResponseExceptionTest extends TestCase
 {
     /**
