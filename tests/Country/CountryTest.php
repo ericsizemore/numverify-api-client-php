@@ -16,8 +16,8 @@ declare(strict_types=1);
 namespace Numverify\Tests\Country;
 
 use Numverify\Country\Country;
-use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 

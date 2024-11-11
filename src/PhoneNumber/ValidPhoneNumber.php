@@ -19,7 +19,6 @@ use Numverify\Exception\NumverifyApiResponseException;
 use stdClass;
 
 use function implode;
-use function sprintf;
 
 /**
  * ValidPhoneNumber
@@ -232,7 +231,7 @@ class ValidPhoneNumber implements PhoneNumberInterface
         }
 
         if ($missingFields !== []) {
-            throw new NumverifyApiResponseException(sprintf(
+            throw new NumverifyApiResponseException(\sprintf(
                 "API response does not contain one or more expected fields: %s",
                 implode(', ', $missingFields)
             ));

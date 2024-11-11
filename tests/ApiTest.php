@@ -56,7 +56,7 @@ class ApiTest extends TestCase
     public function testConstructionWithCachePathOption(bool $useHttps): void
     {
         $api = new Api(self::ACCESS_KEY, $useHttps, null, ['cachePath' => sys_get_temp_dir()]);
-        self::assertObjectHasProperty('client', $api); // @phpstan-ignore-line
+        self::assertObjectHasProperty('client', $api);
         self::assertFileExists(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'numverify');
 
         $reflectionClass    = new ReflectionClass($api);
@@ -69,7 +69,7 @@ class ApiTest extends TestCase
     public function testConstructionWithCustomClient(bool $useHttps): void
     {
         $api = new Api(self::ACCESS_KEY, $useHttps, new Client(['base_uri' => 'http://apilayer.net/api']));
-        self::assertObjectHasProperty('client', $api); // @phpstan-ignore-line
+        self::assertObjectHasProperty('client', $api);
 
         $reflectionClass    = new ReflectionClass($api);
         $reflectionProperty = $reflectionClass->getProperty('client');
@@ -90,7 +90,7 @@ class ApiTest extends TestCase
     public function testConstructionWithDefaultClient(bool $useHttps): void
     {
         $api = new Api(self::ACCESS_KEY, $useHttps);
-        self::assertObjectHasProperty('client', $api); // @phpstan-ignore-line
+        self::assertObjectHasProperty('client', $api);
 
         $reflectionClass    = new ReflectionClass($api);
         $reflectionProperty = $reflectionClass->getProperty('client');
@@ -111,7 +111,7 @@ class ApiTest extends TestCase
     public function testConstructionWithDefaultClientExtraOptions(bool $useHttps): void
     {
         $api = new Api(self::ACCESS_KEY, $useHttps, null, ['timeout' => 10]);
-        self::assertObjectHasProperty('client', $api); // @phpstan-ignore-line
+        self::assertObjectHasProperty('client', $api);
 
         $reflectionClass    = new ReflectionClass($api);
         $reflectionProperty = $reflectionClass->getProperty('client');

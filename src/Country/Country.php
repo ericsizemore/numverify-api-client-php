@@ -18,8 +18,6 @@ namespace Numverify\Country;
 use JsonSerializable;
 use Stringable;
 
-use function sprintf;
-
 /**
  * Country
  * Role: Value object that represents a callable country.
@@ -40,7 +38,7 @@ readonly class Country implements JsonSerializable, Stringable
      */
     public function __toString(): string
     {
-        return sprintf('%s: %s (%s)', $this->countryCode, $this->countryName, $this->dialingCode);
+        return \sprintf('%s: %s (%s)', $this->countryCode, $this->countryName, $this->dialingCode);
     }
 
     /**

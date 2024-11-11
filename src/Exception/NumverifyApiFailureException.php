@@ -17,11 +17,9 @@ namespace Numverify\Exception;
 
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
-
 use stdClass;
 
 use function json_decode;
-use function sprintf;
 
 /**
  * Thrown when the Numverify API returns a failure response.
@@ -80,12 +78,12 @@ class NumverifyApiFailureException extends RuntimeException
         $body = json_decode($jsonBody);
 
         if (!isset($body->error)) {
-            return sprintf('Unknown error - %d %s', $this->statusCode, $this->getReasonPhrase());
+            return \sprintf('Unknown error - %d %s', $this->statusCode, $this->getReasonPhrase());
         }
 
         /** @var stdClass $error */
         $error = $body->error;
 
-        return sprintf('Type:%s Code:%d Info:%s', (string) $error->type, (int) $error->code, (string) $error->info);
+        return \sprintf('Type:%s Code:%d Info:%s', (string) $error->type, (int) $error->code, (string) $error->info);
     }
 }
