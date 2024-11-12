@@ -149,15 +149,15 @@ class CollectionTest extends TestCase
         /** @var stdClass $countryJp */
         $countryJp = $object->JP;
 
-        self::assertSame('US', (string) $countryUs->countryCode);
-        self::assertSame('GB', (string) $countryGb->countryCode);
-        self::assertSame('JP', (string) $countryJp->countryCode);
-        self::assertSame('United States', (string) $countryUs->countryName);
-        self::assertSame('United Kingdom', (string) $countryGb->countryName);
-        self::assertSame('Japan', (string) $countryJp->countryName);
-        self::assertSame('+1', (string) $countryUs->diallingCode);
-        self::assertSame('+44', (string) $countryGb->diallingCode);
-        self::assertSame('+81', (string) $countryJp->diallingCode);
+        self::assertSame('US', $countryUs->countryCode);
+        self::assertSame('GB', $countryGb->countryCode);
+        self::assertSame('JP', $countryJp->countryCode);
+        self::assertSame('United States', $countryUs->countryName);
+        self::assertSame('United Kingdom', $countryGb->countryName);
+        self::assertSame('Japan', $countryJp->countryName);
+        self::assertSame('+1', $countryUs->diallingCode);
+        self::assertSame('+44', $countryGb->diallingCode);
+        self::assertSame('+81', $countryJp->diallingCode);
     }
 
     /**

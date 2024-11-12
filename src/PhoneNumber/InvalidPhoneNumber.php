@@ -39,9 +39,11 @@ class InvalidPhoneNumber implements PhoneNumberInterface
     public function __construct(stdClass $validatedPhoneNumber)
     {
         $this->verifyPhoneNumberData($validatedPhoneNumber);
+        \assert(\is_bool($validatedPhoneNumber->valid));
+        \assert(\is_string($validatedPhoneNumber->number));
 
-        $this->valid  = (bool) $validatedPhoneNumber->valid;
-        $this->number = (string) $validatedPhoneNumber->number;
+        $this->valid  = $validatedPhoneNumber->valid;
+        $this->number = $validatedPhoneNumber->number;
     }
 
     /**

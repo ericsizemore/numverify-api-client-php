@@ -62,16 +62,27 @@ class ValidPhoneNumber implements PhoneNumberInterface
     {
         $this->verifyPhoneNumberData($validatedPhoneNumberData);
 
-        $this->valid               = (bool) $validatedPhoneNumberData->valid;
-        $this->number              = (string) $validatedPhoneNumberData->number;
-        $this->localFormat         = (string) $validatedPhoneNumberData->local_format;
-        $this->internationalFormat = (string) $validatedPhoneNumberData->international_format;
-        $this->countryPrefix       = (string) $validatedPhoneNumberData->country_prefix;
-        $this->countryCode         = (string) $validatedPhoneNumberData->country_code;
-        $this->countryName         = (string) $validatedPhoneNumberData->country_name;
-        $this->location            = (string) $validatedPhoneNumberData->location;
-        $this->carrier             = (string) $validatedPhoneNumberData->carrier;
-        $this->lineType            = (string) $validatedPhoneNumberData->line_type;
+        \assert(\is_bool($validatedPhoneNumberData->valid));
+        \assert(\is_string($validatedPhoneNumberData->number));
+        \assert(\is_string($validatedPhoneNumberData->local_format));
+        \assert(\is_string($validatedPhoneNumberData->international_format));
+        \assert(\is_string($validatedPhoneNumberData->country_prefix));
+        \assert(\is_string($validatedPhoneNumberData->country_code));
+        \assert(\is_string($validatedPhoneNumberData->country_name));
+        \assert(\is_string($validatedPhoneNumberData->location));
+        \assert(\is_string($validatedPhoneNumberData->carrier));
+        \assert(\is_string($validatedPhoneNumberData->line_type));
+
+        $this->valid               = $validatedPhoneNumberData->valid;
+        $this->number              = $validatedPhoneNumberData->number;
+        $this->localFormat         = $validatedPhoneNumberData->local_format;
+        $this->internationalFormat = $validatedPhoneNumberData->international_format;
+        $this->countryPrefix       = $validatedPhoneNumberData->country_prefix;
+        $this->countryCode         = $validatedPhoneNumberData->country_code;
+        $this->countryName         = $validatedPhoneNumberData->country_name;
+        $this->location            = $validatedPhoneNumberData->location;
+        $this->carrier             = $validatedPhoneNumberData->carrier;
+        $this->lineType            = $validatedPhoneNumberData->line_type;
     }
 
     /**
