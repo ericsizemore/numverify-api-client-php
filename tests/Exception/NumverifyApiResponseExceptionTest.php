@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 class NumverifyApiResponseExceptionTest extends TestCase
 {
     /**
-     * @testCase getMessage
+     * Case getMessage.
      */
     public function testGetMessage(): void
     {

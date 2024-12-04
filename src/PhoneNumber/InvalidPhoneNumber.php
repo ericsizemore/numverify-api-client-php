@@ -110,7 +110,7 @@ class InvalidPhoneNumber implements PhoneNumberInterface
 
         if ($missingFields !== []) {
             throw new NumverifyApiResponseException(\sprintf(
-                "API response does not contain one or more expected fields: %s",
+                'API response does not contain one or more expected fields: %s',
                 implode(', ', $missingFields)
             ));
         }
