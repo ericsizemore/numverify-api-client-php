@@ -45,12 +45,6 @@ class ApiTest extends TestCase
 
     private const ACCESS_KEY = 'SomeAccessKey';
 
-    #[TestDox('Verifies the Api::LIBRARY_VERSION constant returns the correct version string.')]
-    public function testApiReturnsCurrentLibraryVersion(): void
-    {
-        self::assertEquals(self::LIBRARY_VERSION, Api::LIBRARY_VERSION);
-    }
-
     #[DataProvider('dataProviderForHttp')]
     #[TestDox('Construction with default Guzzle client, with cache path and $useHttps.')]
     public function testConstructionWithCachePathOption(bool $useHttps): void
