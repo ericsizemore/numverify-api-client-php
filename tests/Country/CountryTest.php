@@ -25,7 +25,7 @@ use stdClass;
  * @internal
  */
 #[CoversClass(Country::class)]
-class CountryTest extends TestCase
+final class CountryTest extends TestCase
 {
     private const COUNTRY_CODE = 'US';
 
@@ -33,7 +33,7 @@ class CountryTest extends TestCase
 
     private const DIALLING_CODE = '+1';
 
-    #[TestDox('Country \'getters\' returns expected results.')]
+    #[TestDox("Country 'getters' returns expected results.")]
     public function testGetters(): void
     {
         $country = new Country(self::COUNTRY_CODE, self::COUNTRY_NAME, self::DIALLING_CODE);

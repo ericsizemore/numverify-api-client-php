@@ -34,7 +34,7 @@ use const DIRECTORY_SEPARATOR;
  * @internal
  */
 #[CoversClass(Api::class)]
-class ApiTest extends TestCase
+final class ApiTest extends TestCase
 {
     /**
      * Current version of the Numverify package.
@@ -72,7 +72,7 @@ class ApiTest extends TestCase
         /** @var Client $client */
         $client = $reflectionProperty->getValue($api);
 
-        $client = self::parseGuzzleConfig($client);
+        $client = $this->parseGuzzleConfig($client);
 
         $expected = 'http://apilayer.net/api';
         $actual   = $client['base_uri'];
@@ -93,7 +93,7 @@ class ApiTest extends TestCase
         /** @var Client $client */
         $client = $reflectionProperty->getValue($api);
 
-        $client = self::parseGuzzleConfig($client);
+        $client = $this->parseGuzzleConfig($client);
 
         $expected = ($useHttps ? 'https' : 'http') . '://apilayer.net/api';
         $actual   = $client['base_uri'];
@@ -114,7 +114,7 @@ class ApiTest extends TestCase
         /** @var Client $client */
         $client = $reflectionProperty->getValue($api);
 
-        $client = self::parseGuzzleConfig($client);
+        $client = $this->parseGuzzleConfig($client);
 
         $expected = ($useHttps ? 'https' : 'http') . '://apilayer.net/api';
         $actual   = $client['base_uri'];
@@ -134,7 +134,7 @@ class ApiTest extends TestCase
     /**
      * @return array<string, int|string>
      */
-    private static function parseGuzzleConfig(Client $client): array
+    private function parseGuzzleConfig(Client $client): array
     {
         $client = (array) $client;
 
@@ -143,7 +143,7 @@ class ApiTest extends TestCase
 
         /** @var array<string, int|string> $config */
         $config = [
-            'base_uri' => (string) $config['base_uri'], // @phpstan-ignore-line
+            'base_uri' => (string) $config['base_uri'],
             'timeout'  => $config['timeout'] ?? 0,
         ];
         return $config;

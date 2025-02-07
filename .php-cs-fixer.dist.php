@@ -146,7 +146,7 @@ $config
         'phpdoc_to_comment'                             => false,
         'phpdoc_trim'                                   => true,
         'phpdoc_trim_consecutive_blank_line_separation' => true,
-        'phpdoc_types_order'                            => true,
+        'phpdoc_types_order'                            => ['sort_algorithm' => 'none'],
         'phpdoc_var_annotation_correct_order'           => true,
         'phpdoc_var_without_name'                       => true,
         'php_unit_data_provider_return_type'            => true,

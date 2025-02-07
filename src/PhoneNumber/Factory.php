@@ -19,16 +19,40 @@ use stdClass;
 
 /**
  * PhoneNumber Factory.
+ *
  * Role: Factory class to create the appropriate PhoneNumber object.
+ *
+ * @phpstan-type ValidPhoneNumberObject = stdClass&object{
+ *     valid: bool|string,
+ *     number: int|string,
+ *     local_format: string,
+ *     international_format: string,
+ *     country_prefix: string,
+ *     country_code: string,
+ *     country_name: string,
+ *     location: string,
+ *     carrier: string,
+ *     line_type: string
+ * }
+ * @phpstan-type InvalidPhoneNumberObject = stdClass&object{valid: bool|string, number: int|string}
  */
 class Factory
 {
+    /**
+     * @param InvalidPhoneNumberObject|ValidPhoneNumberObject $validatedPhoneNumber
+     */
     public static function create(stdClass $validatedPhoneNumber): PhoneNumberInterface
     {
         if ((bool) $validatedPhoneNumber->valid === false) {
+            /**
+             * @var InvalidPhoneNumberObject $validatedPhoneNumber
+             */
             return new InvalidPhoneNumber($validatedPhoneNumber);
         }
 
+        /**
+         * @var ValidPhoneNumberObject $validatedPhoneNumber
+         */
         return new ValidPhoneNumber($validatedPhoneNumber);
     }
 }

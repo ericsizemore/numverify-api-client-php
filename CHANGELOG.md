@@ -1,13 +1,38 @@
-# CHANGELOG
-A not so exhaustive list of changes for each release.
+# Changelog
 
-For a more detailed listing of changes between each version, 
-you can use the following url: https://github.com/ericsizemore/api/compare/v3.0.0...v3.0.1. 
+All notable changes to this project will be documented in this file.
 
-Simply replace the version numbers depending on which set of changes you wish to see.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## 3.0.1 (2024-03-13)
+## [Unreleased]
+
+### Added
+
+  * Added `rector/rector` dev-dependency
+  * Added issue templates, and a pull request template.
+  * Added new docs/files:
+    * backward-compatibility.md
+    * CODE_OF_CONDUCT.md
+    * CONTRIBUTING.md
+
+### Changed
+
+  * Changed locally called `private static` methods to non static methods.
+  * Changed test classes to `final`
+  * Merged workflows into `.github/workflows/continuous-integration.yml`
+  * Updated `CHANGELOG.md` to be compatibile with the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format.
+  * Updated `README.md`
+
+### Removed
+
+* Removed the following workflows from `.github/workflows`
+    * `analysis.yml`
+    * `psalm.yml`
+    * `tests.yml`
+
+## [3.0.1] - 2024-03-13
 
 ### Added
 
@@ -32,10 +57,10 @@ Simply replace the version numbers depending on which set of changes you wish to
 
 ### TODO
 
-  * At the moment the cache middleware for Guzzle is using files. For 3.1, perhaps I could look into supporting Redis, Memcached, etc.
+  * At the moment, the cache middleware for Guzzle is using files. For 3.1, perhaps I could look into supporting Redis, Memcached, etc.
 
 
-## 3.0.0 (2024-03-10)
+## [3.0.0] - 2024-03-10
 
 Forked from [`markrogoyski/numverify-api-client-php`](https://github.com/markrogoyski/numverify-api-client-php) v2.2.0.
 
@@ -80,3 +105,7 @@ Forked from [`markrogoyski/numverify-api-client-php`](https://github.com/markrog
 ### TODO/WIP
 
   * Documentation improvements.
+
+[unreleased]: https://github.com/ericsizemore/numverify-api-client-php/tree/master
+[3.0.1]: https://github.com/ericsizemore/numverify-api-client-php/releases/tag/v3.0.1
+[3.0.0]: https://github.com/ericsizemore/numverify-api-client-php/releases/tag/v3.0.0

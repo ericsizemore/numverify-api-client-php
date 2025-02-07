@@ -31,11 +31,12 @@ use stdClass;
  */
 #[CoversClass(Collection::class)]
 #[UsesClass(Country::class)]
-class CollectionTest extends TestCase
+final class CollectionTest extends TestCase
 {
     private Country $countryGb;
 
     private Country $countryJp;
+
     private Country $countryUs;
 
     /**
@@ -57,7 +58,6 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection(...$countries);
 
-        self::assertSame($expectedCount, $collection->count());
         self::assertCount($expectedCount, $collection);
     }
 
@@ -120,7 +120,7 @@ class CollectionTest extends TestCase
         foreach ($collection as $countryCode => $country) {
             /** @var string $countryCode */
             $expectedCountries[$countryCode] = true;
-            self::assertInstanceOf(Country::class, $country); // @phpstan-ignore-line
+            self::assertInstanceOf(Country::class, $country);
         }
 
         foreach ($expectedCountries as $expectedCountry) {

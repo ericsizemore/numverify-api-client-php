@@ -21,11 +21,28 @@ use stdClass;
 use function implode;
 
 /**
- * ValidPhoneNumber
+ * ValidPhoneNumber.
+ *
  * Role: Value object to represent a phone number that the Numverify returned as valid.
+ *
+ * @phpstan-import-type ValidPhoneNumberObject from Factory
+ *
+ * @phpstan-type ValidNumberArray = array{
+ *     valid: bool,
+ *     number: string,
+ *     localFormat: string,
+ *     internationalFormat: string,
+ *     countryPrefix: string,
+ *     countryCode: string,
+ *     countryName: string,
+ *     location: string,
+ *     carrier: string,
+ *     lineType: string
+ * }
  *
  * @see \Numverify\Tests\PhoneNumber\ValidPhoneNumberTest
  */
+
 class ValidPhoneNumber implements PhoneNumberInterface
 {
     /**
@@ -53,28 +70,20 @@ class ValidPhoneNumber implements PhoneNumberInterface
     private readonly string $location;
 
     private readonly string $number;
+
     private readonly bool $valid;
 
     /**
      * ValidPhoneNumber constructor.
+     *
+     * @param ValidPhoneNumberObject $validatedPhoneNumberData
      */
     public function __construct(stdClass $validatedPhoneNumberData)
     {
         $this->verifyPhoneNumberData($validatedPhoneNumberData);
 
-        \assert(\is_bool($validatedPhoneNumberData->valid));
-        \assert(\is_string($validatedPhoneNumberData->number));
-        \assert(\is_string($validatedPhoneNumberData->local_format));
-        \assert(\is_string($validatedPhoneNumberData->international_format));
-        \assert(\is_string($validatedPhoneNumberData->country_prefix));
-        \assert(\is_string($validatedPhoneNumberData->country_code));
-        \assert(\is_string($validatedPhoneNumberData->country_name));
-        \assert(\is_string($validatedPhoneNumberData->location));
-        \assert(\is_string($validatedPhoneNumberData->carrier));
-        \assert(\is_string($validatedPhoneNumberData->line_type));
-
-        $this->valid               = $validatedPhoneNumberData->valid;
-        $this->number              = $validatedPhoneNumberData->number;
+        $this->valid               = (bool) $validatedPhoneNumberData->valid;
+        $this->number              = (string) $validatedPhoneNumberData->number;
         $this->localFormat         = $validatedPhoneNumberData->local_format;
         $this->internationalFormat = $validatedPhoneNumberData->international_format;
         $this->countryPrefix       = $validatedPhoneNumberData->country_prefix;
@@ -88,18 +97,7 @@ class ValidPhoneNumber implements PhoneNumberInterface
     /**
      * Debug info.
      *
-     * @return array{
-     *     valid: bool,
-     *     number: string,
-     *     localFormat: string,
-     *     internationalFormat: string,
-     *     countryPrefix: string,
-     *     countryCode: string,
-     *     countryName: string,
-     *     location: string,
-     *     carrier: string,
-     *     lineType: string
-     * }
+     * @return ValidNumberArray
      */
     public function __debugInfo(): array
     {
@@ -197,18 +195,7 @@ class ValidPhoneNumber implements PhoneNumberInterface
     /**
      * @inheritDoc
      *
-     * @return array{
-     *     valid: bool,
-     *     number: string,
-     *     localFormat: string,
-     *     internationalFormat: string,
-     *     countryPrefix: string,
-     *     countryCode: string,
-     *     countryName: string,
-     *     location: string,
-     *     carrier: string,
-     *     lineType: string
-     * }
+     * @return ValidNumberArray
      */
     public function jsonSerialize(): array
     {

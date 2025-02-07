@@ -31,25 +31,26 @@ class InvalidPhoneNumber implements PhoneNumberInterface
     private const FIELDS = ['valid', 'number'];
 
     private readonly string $number;
+
     private readonly bool $valid;
 
     /**
      * InvalidPhoneNumber constructor.
+     *
+     * @param stdClass&object{valid: bool|string, number: int|string} $validatedPhoneNumber
      */
     public function __construct(stdClass $validatedPhoneNumber)
     {
         $this->verifyPhoneNumberData($validatedPhoneNumber);
-        \assert(\is_bool($validatedPhoneNumber->valid));
-        \assert(\is_string($validatedPhoneNumber->number));
 
-        $this->valid  = $validatedPhoneNumber->valid;
-        $this->number = $validatedPhoneNumber->number;
+        $this->valid  = (bool) $validatedPhoneNumber->valid;
+        $this->number = (string) $validatedPhoneNumber->number;
     }
 
     /**
      * Debug info.
      *
-     * @return array<string, bool|string>
+     * @return array{valid: bool, number: string}
      */
     public function __debugInfo(): array
     {
@@ -83,7 +84,7 @@ class InvalidPhoneNumber implements PhoneNumberInterface
     /**
      * @inheritDoc
      *
-     * @return array<string, bool|string>
+     * @return array{valid: bool, number: string}
      */
     public function jsonSerialize(): array
     {

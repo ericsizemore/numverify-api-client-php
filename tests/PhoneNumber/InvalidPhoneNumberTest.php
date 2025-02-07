@@ -32,10 +32,11 @@ use function print_r;
  * @internal
  */
 #[CoversClass(InvalidPhoneNumber::class)]
-class InvalidPhoneNumberTest extends TestCase
+final class InvalidPhoneNumberTest extends TestCase
 {
     private const NUMBER = '14158586273';
-    private const VALID  = false;
+
+    private const VALID = false;
 
     private stdClass $validatedPhoneNumberData;
 

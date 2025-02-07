@@ -1,6 +1,37 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^You should use assertCount\\(\\$expectedCount, \\$variable\\) instead of assertSame\\(\\$expectedCount, \\$variable\\-\\>count\\(\\)\\)\\.$#"
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Numverify\\\\Country\\\\Collection'' and Numverify\\Country\\Collection will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/ApiCountryTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Numverify\\\\Country\\\\Country'' and Numverify\\Country\\Country will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/ApiCountryTest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: tests/ApiTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Numverify\\\\Country\\\\Country'' and Numverify\\Country\\Country will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
 			count: 1
 			path: tests/Country/CollectionTest.php
+
+		-
+			message: '#^Parameter \#1 \$validatedPhoneNumber of class Numverify\\PhoneNumber\\InvalidPhoneNumber constructor expects object\{valid\: bool\|string, number\: int\|string\}&stdClass, stdClass given\.$#'
+			identifier: argument.type
+			count: 6
+			path: tests/PhoneNumber/InvalidPhoneNumberTest.php
+
+		-
+			message: '#^Parameter \#1 \$validatedPhoneNumberData of class Numverify\\PhoneNumber\\ValidPhoneNumber constructor expects object\{valid\: bool\|string, number\: int\|string, local_format\: string, international_format\: string, country_prefix\: string, country_code\: string, country_name\: string, location\: string, carrier\: string, line_type\: string\}&stdClass, stdClass given\.$#'
+			identifier: argument.type
+			count: 6
+			path: tests/PhoneNumber/ValidPhoneNumberTest.php

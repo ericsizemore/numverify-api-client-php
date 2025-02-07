@@ -32,7 +32,7 @@ use function print_r;
  * @internal
  */
 #[CoversClass(ValidPhoneNumber::class)]
-class ValidPhoneNumberTest extends TestCase
+final class ValidPhoneNumberTest extends TestCase
 {
     private const CARRIER = 'AT&T Mobility LLC';
 
@@ -51,7 +51,8 @@ class ValidPhoneNumberTest extends TestCase
     private const LOCATION = 'Novato';
 
     private const NUMBER = '14158586273';
-    private const VALID  = true;
+
+    private const VALID = true;
 
     private stdClass $validatedPhoneNumberData;
 
@@ -89,7 +90,7 @@ class ValidPhoneNumberTest extends TestCase
         self::assertStringContainsString('lineType', $debugInfo);
     }
 
-    #[TestDox('ValidPhoneNumber \'getters\' returns appropriate data.')]
+    #[TestDox("ValidPhoneNumber 'getters' returns appropriate data.")]
     public function testGetters(): void
     {
         $validPhoneNumber = new ValidPhoneNumber($this->validatedPhoneNumberData);

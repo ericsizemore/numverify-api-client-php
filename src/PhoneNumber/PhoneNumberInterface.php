@@ -27,6 +27,7 @@ interface PhoneNumberInterface extends JsonSerializable, Stringable
      * Get the phone number.
      */
     public function getNumber(): string;
+
     /**
      * Is the phone number valid?
      */

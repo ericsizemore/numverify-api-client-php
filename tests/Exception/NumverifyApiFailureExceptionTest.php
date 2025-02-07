@@ -25,12 +25,13 @@ use PHPUnit\Framework\TestCase;
  * @internal
  */
 #[CoversClass(NumverifyApiFailureException::class)]
-class NumverifyApiFailureExceptionTest extends TestCase
+final class NumverifyApiFailureExceptionTest extends TestCase
 {
     private const BODY = 'server error';
 
     private const REASON_PHRASE = 'Internal Server Error';
-    private const STATUS_CODE   = 500;
+
+    private const STATUS_CODE = 500;
 
     private Response $response;
 

@@ -31,6 +31,7 @@ class NumverifyApiFailureException extends RuntimeException
     private readonly string $body;
 
     private readonly string $reasonPhrase;
+
     private readonly int $statusCode;
 
     public function __construct(ResponseInterface $response)

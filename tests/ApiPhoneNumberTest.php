@@ -40,7 +40,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(Api::class)]
 #[CoversClass(Factory::class)]
 #[CoversClass(NumverifyApiFailureException::class)]
-class ApiPhoneNumberTest extends TestCase
+final class ApiPhoneNumberTest extends TestCase
 {
     private const ACCESS_KEY = 'SomeAccessKey';
 

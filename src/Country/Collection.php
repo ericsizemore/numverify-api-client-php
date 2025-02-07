@@ -54,6 +54,8 @@ class Collection implements Countable, Iterator, JsonSerializable
 
     /**
      * @inheritDoc
+     *
+     * @psalm-api
      */
     public function count(): int
     {

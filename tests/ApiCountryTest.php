@@ -37,7 +37,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(Country::class)]
 #[CoversClass(Api::class)]
 #[CoversClass(NumverifyApiFailureException::class)]
-class ApiCountryTest extends TestCase
+final class ApiCountryTest extends TestCase
 {
     private const ACCESS_KEY = 'SomeAccessKey';
 
@@ -89,7 +89,7 @@ class ApiCountryTest extends TestCase
     public function testCountriesReturnsCollectionOfCountries(bool $useHttps): void
     {
         $countryCollection = $this->aClient(useHttps: $useHttps)->getCountries();
-        self::assertInstanceOf(Collection::class, $countryCollection); // @phpstan-ignore-line
+        self::assertInstanceOf(Collection::class, $countryCollection);
         self::assertContainsOnlyInstancesOf(Country::class, $countryCollection);
     }
 
@@ -103,7 +103,7 @@ class ApiCountryTest extends TestCase
         foreach ($countryCollection as $countryCode => $country) {
             /** @var string $countryCode */
             $expectedCountries[$countryCode] = true;
-            self::assertInstanceOf(Country::class, $country); // @phpstan-ignore-line
+            self::assertInstanceOf(Country::class, $country);
         }
 
         foreach ($expectedCountries as $expectedCountry) {

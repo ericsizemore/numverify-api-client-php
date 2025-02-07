@@ -48,8 +48,24 @@ use function trim;
  *
  * @psalm-api
  *
- * @phpstan-type ApiJsonArray array{success?: bool, error?: array{code?: int, type?: string, info?: string}, valid?: bool, number?: string, local_format?: string, international_format?: string, country_prefix?: string, country_code?: string, country_name?: string, location?: string, carrier?: string, line_type?: string}
+ * @phpstan-type ApiJsonArray array{
+ *     success?: bool,
+ *     error?: array{code?: int, type?: string, info?: string},
+ *     valid?: bool,
+ *     number?: string,
+ *     local_format?: string,
+ *     international_format?: string,
+ *     country_prefix?: string,
+ *     country_code?: string,
+ *     country_name?: string,
+ *     location?: string,
+ *     carrier?: string,
+ *     line_type?: string
+ * }
  * @phpstan-type ApiCountryJsonArray array<string, array{country_name: string, dialling_code: string}>
+ *
+ * @phpstan-import-type InvalidPhoneNumberObject from PhoneNumber\Factory
+ * @phpstan-import-type ValidPhoneNumberObject from PhoneNumber\Factory
  */
 class Api
 {
@@ -82,7 +98,7 @@ class Api
     /**
      * Api constructor.
      *
-     * Requires an access key. You can get one from Numverify:
+     * Requires an access key. You can get one from Numverify.
      *
      * @see https://numverify.com/product
      *
@@ -108,11 +124,11 @@ class Api
         }
 
         // Build client
-        $clientOptions = ['base_uri' => self::getUrl($useHttps)];
+        $clientOptions = ['base_uri' => $this->getUrl($useHttps)];
 
         // If $options has 'cachePath' key, and it is a valid directory, then buildCacheHandler() will
         // add Cache to the Guzzle handler stack.
-        $options = self::buildCacheHandler($options);
+        $options = $this->buildCacheHandler($options);
 
         // Merge $options into main client options.
         $clientOptions = array_merge($clientOptions, $options);
@@ -141,7 +157,7 @@ class Api
         }
 
         /** @var ApiCountryJsonArray $body */
-        $body = self::validateAndDecodeResponse($response, true);
+        $body = $this->validateAndDecodeResponse($response, true);
 
         $countries = array_map(
             static fn (array $country, string $countryCode): Country => new Country($countryCode, $country['country_name'], $country['dialling_code']),
@@ -186,8 +202,7 @@ class Api
             throw new NumverifyApiFailureException($serverException->getResponse());
         }
 
-        /** @var stdClass $body */
-        $body = self::validateAndDecodeResponse($result);
+        $body = $this->validateAndDecodeResponse($result);
 
         return Factory::create($body);
     }
@@ -203,7 +218,7 @@ class Api
      *
      * @return array<string, mixed>
      */
-    private static function buildCacheHandler(array $options): array
+    private function buildCacheHandler(array $options): array
     {
         $cachePath = (string) ($options['cachePath'] ?? null); // @phpstan-ignore-line
 
@@ -223,7 +238,7 @@ class Api
     /**
      * Get the URL to use for API calls.
      */
-    private static function getUrl(bool $useHttps): string
+    private function getUrl(bool $useHttps): string
     {
         return $useHttps ? self::HTTPS_URL : self::HTTP_URL;
     }
@@ -237,9 +252,9 @@ class Api
      *
      * @throws NumverifyApiFailureException If the response is non 200 or success field is false.
      *
-     * @return ApiCountryJsonArray|ApiJsonArray|stdClass
+     * @return ($asArray is true ? ApiCountryJsonArray|ApiJsonArray : InvalidPhoneNumberObject|ValidPhoneNumberObject)
      */
-    private static function validateAndDecodeResponse(ResponseInterface $response, bool $asArray = false): array|stdClass
+    private function validateAndDecodeResponse(ResponseInterface $response, bool $asArray = false): array|stdClass
     {
         // If not 200 ok
         if ($response->getStatusCode() !== 200) {
@@ -247,21 +262,26 @@ class Api
         }
 
         /**
-         * @var ApiCountryJsonArray|ApiJsonArray|stdClass $body
+         * @var ApiCountryJsonArray|ApiJsonArray|InvalidPhoneNumberObject|ValidPhoneNumberObject $body
          */
         $body = json_decode($response->getBody()->getContents(), $asArray);
 
-        /**
-         * @var ApiCountryJsonArray|ApiJsonArray $data
-         */
-        $data = $asArray ? $body : (array) $body;
-
-        if (isset($data['success']) && $data['success'] === false) {
+        if (!$this->verifySuccess($body)) {
             throw new NumverifyApiFailureException($response);
         }
 
-        unset($data);
-
         return $body;
+    }
+
+    /**
+     * @param ApiCountryJsonArray|ApiJsonArray|InvalidPhoneNumberObject|ValidPhoneNumberObject $body
+     */
+    private function verifySuccess(array|stdClass $body): bool
+    {
+        if (!\is_array($body)) {
+            $body = (array) $body;
+        }
+
+        return !(isset($body['success']) && $body['success'] === false);
     }
 }

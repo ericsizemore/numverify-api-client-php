@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  */
 #[CoversClass(NumverifyApiResponseException::class)]
-class NumverifyApiResponseExceptionTest extends TestCase
+final class NumverifyApiResponseExceptionTest extends TestCase
 {
     /**
      * Case getMessage.

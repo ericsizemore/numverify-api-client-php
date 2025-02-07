@@ -14,7 +14,11 @@
         <directory name="src"/>
         <directory name="tests"/>
         <ignoreFiles>
+            <directory name=".github"/>
             <directory name="vendor"/>
+        </ignoreFiles>
+        <ignoreFiles allowMissingFiles="true">
+            <directory name="build"/>
         </ignoreFiles>
     </projectFiles>
     <plugins>
