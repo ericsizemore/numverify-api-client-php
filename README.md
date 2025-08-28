@@ -219,7 +219,6 @@ try {
 
 - Author: [Eric Sizemore](https://github.com/ericsizemore)
 - Thanks to [all Contributors](https://github.com/ericsizemore/numverify-api-client-php/contributors).
-- Special thanks to [JetBrains](https://www.jetbrains.com/?from=esi-numverify-api-client-php) for their Licenses for Open Source Development.
 
 `numverify-api-client-php` is forked from [`markrogoyski/numverify-api-client-php`](https://github.com/markrogoyski/numverify-api-client-php) by [`Mark Rogoyski`](https://github.com/markrogoyski).
 
