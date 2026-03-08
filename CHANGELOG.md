@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-  * Added `rector/rector` dev-dependency
+  * Added `rector/rector` dev-dependency.
   * Added issue templates, and a pull request template.
   * Added new docs/files:
     * backward-compatibility.md
@@ -19,11 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-  * Changed locally called `private static` methods to non static methods.
-  * Changed test classes to `final`
-  * Merged workflows into `.github/workflows/continuous-integration.yml`
+  * Changed locally called `private static` methods to non-static methods.
+  * Changed test classes to `final`.
+  * Merged workflows into `.github/workflows/continuous-integration.yml`.
   * Updated `CHANGELOG.md` to be compatibile with the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format.
-  * Updated `README.md`
+  * Updated `README.md`.
+  * Updated dependency version constraints to allow Symfony 7.4 or 8 & PHPUnit 11, 12, or 13.
+    * As a consequence, `#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]` being used as a temporary
+      band-aid; some tests need refactored. 
+  * Updated `composer.json` scripts to add `psalm:ci`.
 
 ### Removed
 
@@ -31,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     * `analysis.yml`
     * `psalm.yml`
     * `tests.yml`
+
 
 ## [3.0.1] - 2024-03-13
 

@@ -107,6 +107,7 @@ class ValidPhoneNumber implements PhoneNumberInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __toString(): string
     {
         return $this->number;
@@ -179,6 +180,7 @@ class ValidPhoneNumber implements PhoneNumberInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getNumber(): string
     {
         return $this->number;
@@ -187,6 +189,7 @@ class ValidPhoneNumber implements PhoneNumberInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isValid(): bool
     {
         return true;
@@ -197,6 +200,7 @@ class ValidPhoneNumber implements PhoneNumberInterface
      *
      * @return ValidNumberArray
      */
+    #[\Override]
     public function jsonSerialize(): array
     {
         return [

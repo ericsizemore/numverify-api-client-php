@@ -57,6 +57,7 @@ class Collection implements Countable, Iterator, JsonSerializable
      *
      * @psalm-api
      */
+    #[\Override]
     public function count(): int
     {
         return \count($this->byCountryCode);
@@ -65,6 +66,7 @@ class Collection implements Countable, Iterator, JsonSerializable
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function current(): Country
     {
         $country = current($this->byCountryCode);
@@ -97,6 +99,7 @@ class Collection implements Countable, Iterator, JsonSerializable
      *
      * @return object[]
      */
+    #[\Override]
     public function jsonSerialize(): array
     {
         return $this->byCountryCode;
@@ -105,6 +108,7 @@ class Collection implements Countable, Iterator, JsonSerializable
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function key(): null|int|string
     {
         return key($this->byCountryCode);
@@ -113,6 +117,7 @@ class Collection implements Countable, Iterator, JsonSerializable
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function next(): void
     {
         next($this->byCountryCode);
@@ -121,6 +126,7 @@ class Collection implements Countable, Iterator, JsonSerializable
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function rewind(): void
     {
         reset($this->byCountryCode);
@@ -129,6 +135,7 @@ class Collection implements Countable, Iterator, JsonSerializable
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function valid(): bool
     {
         return key($this->byCountryCode) !== null;

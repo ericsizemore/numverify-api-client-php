@@ -36,6 +36,7 @@ readonly class Country implements JsonSerializable, Stringable
      *
      * CountryCode: CountryName (DialingCode)
      */
+    #[\Override]
     public function __toString(): string
     {
         return \sprintf('%s: %s (%s)', $this->countryCode, $this->countryName, $this->dialingCode);
@@ -70,6 +71,7 @@ readonly class Country implements JsonSerializable, Stringable
      *
      * @return string[]
      */
+    #[\Override]
     public function jsonSerialize(): array
     {
         return [

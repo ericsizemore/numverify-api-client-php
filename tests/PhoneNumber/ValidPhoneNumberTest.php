@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace Numverify\Tests\PhoneNumber;
 
-use Iterator;
 use Numverify\Exception\NumverifyApiResponseException;
 use Numverify\PhoneNumber\ValidPhoneNumber;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -56,6 +55,7 @@ final class ValidPhoneNumberTest extends TestCase
 
     private stdClass $validatedPhoneNumberData;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->validatedPhoneNumberData                       = new stdClass();
@@ -167,9 +167,9 @@ final class ValidPhoneNumberTest extends TestCase
     }
 
     /**
-     * @psalm-suppress PossiblyUnusedMethod
+     * @return iterable<int, string[]>
      */
-    public static function dataProviderForFields(): Iterator
+    public static function dataProviderForFields(): iterable
     {
         yield ['valid'];
         yield ['number'];

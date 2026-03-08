@@ -35,6 +35,7 @@ final class NumverifyApiFailureExceptionTest extends TestCase
 
     private Response $response;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->response = new Response(self::STATUS_CODE, body: self::BODY, reason: self::REASON_PHRASE);

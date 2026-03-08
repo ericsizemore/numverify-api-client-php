@@ -17,7 +17,6 @@ namespace Numverify\Tests;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use Iterator;
 use Numverify\Api;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -123,9 +122,9 @@ final class ApiTest extends TestCase
     }
 
     /**
-     * @psalm-suppress PossiblyUnusedMethod
+     * @return iterable<int, bool[]>
      */
-    public static function dataProviderForHttp(): Iterator
+    public static function dataProviderForHttp(): iterable
     {
         yield [true];
         yield [false];

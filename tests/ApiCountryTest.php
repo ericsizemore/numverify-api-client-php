@@ -19,7 +19,6 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Iterator;
 use Numverify\Api;
 use Numverify\Country\Collection;
 use Numverify\Country\Country;
@@ -37,6 +36,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(Country::class)]
 #[CoversClass(Api::class)]
 #[CoversClass(NumverifyApiFailureException::class)]
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class ApiCountryTest extends TestCase
 {
     private const ACCESS_KEY = 'SomeAccessKey';
@@ -125,9 +125,9 @@ final class ApiCountryTest extends TestCase
     }
 
     /**
-     * @psalm-suppress PossiblyUnusedMethod
+     * @return iterable<int, bool[]>
      */
-    public static function dataProviderForHttp(): Iterator
+    public static function dataProviderForHttp(): iterable
     {
         yield [true];
         yield [false];

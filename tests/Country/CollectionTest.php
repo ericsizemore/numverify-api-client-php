@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace Numverify\Tests\Country;
 
-use Iterator;
 use LogicException;
 use Numverify\Country\Collection;
 use Numverify\Country\Country;
@@ -42,6 +41,7 @@ final class CollectionTest extends TestCase
     /**
      * Set up countries.
      */
+    #[\Override]
     protected function setUp(): void
     {
         $this->countryUs = new Country('US', 'United States', '+1');
@@ -161,9 +161,9 @@ final class CollectionTest extends TestCase
     }
 
     /**
-     * @psalm-suppress PossiblyUnusedMethod
+     * @return iterable<string, array{array{}|Country[], int}>
      */
-    public static function dataProviderForCountryCounts(): Iterator
+    public static function dataProviderForCountryCounts(): iterable
     {
         yield 'zero' => [
             [],

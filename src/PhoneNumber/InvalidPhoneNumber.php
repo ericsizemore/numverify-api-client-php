@@ -60,6 +60,7 @@ class InvalidPhoneNumber implements PhoneNumberInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __toString(): string
     {
         return $this->number;
@@ -68,6 +69,7 @@ class InvalidPhoneNumber implements PhoneNumberInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getNumber(): string
     {
         return $this->number;
@@ -76,6 +78,7 @@ class InvalidPhoneNumber implements PhoneNumberInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isValid(): bool
     {
         return false;
@@ -86,6 +89,7 @@ class InvalidPhoneNumber implements PhoneNumberInterface
      *
      * @return array{valid: bool, number: string}
      */
+    #[\Override]
     public function jsonSerialize(): array
     {
         return [
