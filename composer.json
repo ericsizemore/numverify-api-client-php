@@ -105,7 +105,7 @@
         "phpcs:check": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff",
         "phpcs:fix": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php",
         "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon -vvv",
-        "phpunit": "vendor/bin/phpunit --display-phpunit-notices",
+        "phpunit": "vendor/bin/phpunit",
         "phpunit:migrate": "@phpunit --migrate-configuration",
         "psalm": "vendor/bin/psalm -c psalm.xml --no-cache",
         "psalm:baseline": "vendor/bin/psalm -c psalm.xml --no-cache --no-diff --set-baseline=psalm-baseline.xml",
