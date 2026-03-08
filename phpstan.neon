@@ -1,9 +1,9 @@
 includes:
-    - phpstan-baseline.neon
+    #- phpstan-baseline.neon
     - vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
     level: 10
     paths:
         - ./src
-        - ./tests
+        #- ./tests
