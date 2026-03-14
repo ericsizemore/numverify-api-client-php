@@ -48,7 +48,7 @@
     "require": {
         "php": ">=8.2",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^7.9",
+        "guzzlehttp/guzzle": "^7.10",
         "kevinrob/guzzle-cache-middleware": "^7.0",
         "symfony/cache": "^7.4 || ^8.0"
     },
@@ -65,9 +65,7 @@
         "rector/rector": "^2.3",
         "vimeo/psalm": "^6.15"
     },
-    "replace": {
-        "markrogoyski/numverify-api-client-php": "^2.1"
-    },
+
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {

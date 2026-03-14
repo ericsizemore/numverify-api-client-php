@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+No major changes.
+
 ### Added
 
   * Added `rector/rector` dev-dependency.
@@ -22,12 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Changed locally called `private static` methods to non-static methods.
   * Changed test classes to `final`.
   * Merged workflows into `.github/workflows/continuous-integration.yml`.
-  * Updated `CHANGELOG.md` to be compatibile with the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format.
+  * Updated `CHANGELOG.md` to be compatible with the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format.
   * Updated `README.md`.
+  * Updated PHP version requirement constraint to allow PHP >= 8.2.
   * Updated dependency version constraints to allow Symfony 7.4 or 8 & PHPUnit 11, 12, or 13.
     * As a consequence, `#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]` being used as a temporary
       band-aid; some tests need refactored. 
   * Updated `composer.json` scripts to add `psalm:ci`.
+  * Updated [Security Policy](SECURITY.md).
 
 ### Removed
 
@@ -72,7 +76,7 @@ Forked from [`markrogoyski/numverify-api-client-php`](https://github.com/markrog
 ### Added
 
   * Guzzle cache support via `kevinrob/guzzle-cache-middleware` and `symfony/cache`.
-    * New function `Api::buildCacheHandler` which will add the cache middleware to the handler stack if $options['cachePath'] is passed to Api's constructor.
+    * New function `Api::buildCacheHandler` which will add the cache middleware to the handler stack if `$options['cachePath']` is passed to Api's constructor.
   * Imports for all used functions, constants, and class names.
   * dev-dependencies for PHP-CS-Fixer and PHPStan (w/extensions for phpunit, strict rules)
   * New workflow for static analysis: `.github/workflows/analysis.yml`
